@@ -4,35 +4,28 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.Game;
 
-public class MainGame extends ApplicationAdapter {
-	SpriteBatch batch;
+public class MainGame extends Game {
+
+	public static final int V_WIDTH = 400;
+	public static final int V_HEIGHT = 208;
+	public SpriteBatch batch;
 	Texture img;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		setScreen(new PlayScreen(this));
 	}
 
 	@Override
-	public void render () {
-		ScreenUtils.clear(1, 0, 0, 1);
-
-		// logic code (player location, damage, interactions)
-
-
-		// Start of image rendering code
-		batch.begin();
-		
-		batch.draw(img, 0, 0);
-		
-		// End of image rendering code
-		batch.end();
+	public void render() {
+		super.render();
 	}
 	
 	@Override
-	public void dispose () {
+	public void dispose() {
 		batch.dispose();
 		img.dispose();
 	}
