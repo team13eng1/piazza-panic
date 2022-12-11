@@ -41,6 +41,8 @@ public class PlayScreen implements Screen {
     private Chef chef1;
     private Chef chef2;
 
+    private Chef controlledChef;
+
 
 
     public PlayScreen(MainGame game){
@@ -62,6 +64,8 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         chef1 = new Chef(this.world);
+        chef2 = new Chef(this.world);
+        controlledChef = chef1;
     }
 
     @Override
@@ -75,22 +79,33 @@ public class PlayScreen implements Screen {
                 Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
 
             if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-                chef1.b2body.setLinearVelocity(0,0.5f);
+                controlledChef.b2body.setLinearVelocity(0,0.5f);
             }
 
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                chef1.b2body.setLinearVelocity(0.5f,0);
+                controlledChef.b2body.setLinearVelocity(0.5f,0);
             }
 
             if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                chef1.b2body.setLinearVelocity(-0.5f,0);
+                controlledChef.b2body.setLinearVelocity(-0.5f,0);
             }
 
             if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-                chef1.b2body.setLinearVelocity(0,-0.5f);
+                controlledChef.b2body.setLinearVelocity(0,-0.5f);
             }
-    } else {
-            chef1.b2body.setLinearVelocity(0,0); }
+            } else {
+                controlledChef.b2body.setLinearVelocity(0,0); }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            if (controlledChef.equals(chef1)){
+                controlledChef.b2body.setLinearVelocity(0,0);
+                controlledChef = chef2;
+            }
+            else {
+                controlledChef.b2body.setLinearVelocity(0,0);
+                controlledChef = chef1;
+            }
+        }
     }
     public void update(float dt){
         handleInput(dt);
@@ -98,6 +113,7 @@ public class PlayScreen implements Screen {
         gamecam.update();
         renderer.setView(gamecam);
         chef1.update(dt);
+        chef2.update(dt);
         world.step(1/60f, 6, 2);
 
     }
@@ -119,6 +135,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         chef1.draw(game.batch);
+        chef2.draw(game.batch);
         game.batch.end();
     }
 
