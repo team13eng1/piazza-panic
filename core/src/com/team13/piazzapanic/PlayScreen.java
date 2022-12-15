@@ -1,6 +1,9 @@
 package com.team13.piazzapanic;
 
 import Sprites.Chef;
+import Tools.B2WorldCreator;
+import Tools.WorldContactListener;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -43,8 +46,6 @@ public class PlayScreen implements Screen {
 
     private Chef controlledChef;
 
-
-
     public PlayScreen(MainGame game){
         this.game = game;
 
@@ -63,9 +64,13 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0,0), true);
         b2dr = new Box2DDebugRenderer();
 
+        new B2WorldCreator(world, map);
+
         chef1 = new Chef(this.world);
         chef2 = new Chef(this.world);
         controlledChef = chef1;
+
+        world.setContactListener(new WorldContactListener());
     }
 
     @Override

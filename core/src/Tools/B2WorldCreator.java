@@ -6,7 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 
-/*public class B2WorldCreator {
+public class B2WorldCreator {
 
     public B2WorldCreator(World world, TiledMap map) {
 
@@ -15,7 +15,129 @@ import com.badlogic.gdx.physics.box2d.*;
         FixtureDef fdef = new FixtureDef();
         Body body;
 
-        for (MapObject object : map.getLayers().get().getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef);
+        }
+        
+        for (MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef);
+        }
+
+        
+        for (MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef);
+        }
+
+        
+        for (MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef);
+        }
+        
+        for (MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef);
+        }
+        
+        for (MapObject object : map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef);
+        }
+
+        for (MapObject object : map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef);
+        }
+        
+        for (MapObject object : map.getLayers().get(8).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef);
+        }
+        
+        for (MapObject object : map.getLayers().get(9).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef);
+        }
+        
+        for (MapObject object : map.getLayers().get(10).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef);
+        }
+        
+        for (MapObject object : map.getLayers().get(11).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             bdef.type = BodyDef.BodyType.StaticBody;
@@ -27,4 +149,4 @@ import com.badlogic.gdx.physics.box2d.*;
             body.createFixture(fdef);
         }
     }
-}*/
+}
