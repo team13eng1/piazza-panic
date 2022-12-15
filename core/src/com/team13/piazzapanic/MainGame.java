@@ -12,7 +12,6 @@ public class MainGame extends Game {
 
 	public static final float PPM = 100;
 	public SpriteBatch batch;
-	Texture img;
 	
 	@Override
 	public void create () {
@@ -28,7 +27,6 @@ public class MainGame extends Game {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		img.dispose();
 	}
 }
 
