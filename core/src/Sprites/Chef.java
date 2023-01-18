@@ -3,19 +3,30 @@ package Sprites;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.team13.piazzapanic.MainGame;
 public class Chef extends Sprite {
     public World world;
     public Body b2body;
 
+    private float initialX;
+    private float initialY;
+
+
+    public Vector2 startVector;
+    private float chefCollisionTimer;
+    public boolean chefCollision;
     private float chefWidth;
     private float chefHeight;
     private Texture wholeImage;
     public enum State {UP, DOWN, LEFT, RIGHT}
     public State currentState;
     public TextureRegion currentSkin;
-    public Chef(World world) {
+    public Chef(World world, float startX, float startY) {
+        initialX = startX;
+        initialY = startY;
+
         wholeImage = new Texture("Chef_skins.png");
         this.world = world;
         currentState = State.DOWN;
@@ -26,12 +37,24 @@ public class Chef extends Sprite {
         chefWidth =  13/MainGame.PPM;
         chefHeight =  20/MainGame.PPM;
         setBounds(0,0,chefWidth, chefHeight);
+        chefCollision = false;
+        chefCollisionTimer = 0;
+        startVector = new Vector2(0,0);
     }
 
     public void update(float dt){
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         currentSkin= getSkin(dt);
         setRegion(currentSkin);
+
+        if(chefCollision) {
+            chefCollisionTimer += dt;
+            b2body.setLinearVelocity(new Vector2(startVector.x * -1, startVector.y * -1));
+            if (chefCollisionTimer > 0.3f) {
+                chefCollision = false;
+                chefCollisionTimer = 0;
+            }
+        }
     }
 
     private TextureRegion getSkin(float dt) {
@@ -72,7 +95,7 @@ public class Chef extends Sprite {
 
     public void defineChef(){
         BodyDef bdef = new BodyDef();
-        bdef.position.set(32 / MainGame.PPM,32 / MainGame.PPM);
+        bdef.position.set(initialX / MainGame.PPM,initialY / MainGame.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -83,17 +106,16 @@ public class Chef extends Sprite {
         shape.setAsBox(chefWidth, chefHeight);
 
         fdef.shape = shape;
-        b2body.createFixture(fdef);
+        b2body.createFixture(fdef).setUserData(this);
     }
 
+    public void chefsColliding(){
+        chefCollision = true;
+        setStartVector();
+    }
 
+    public void setStartVector() {
+        startVector = new Vector2(b2body.getLinearVelocity().x,b2body.getLinearVelocity().y);
 
-
-
-
-
-
-
-
-
+    }
 }

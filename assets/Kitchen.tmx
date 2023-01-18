@@ -1,16 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
- <tileset firstgid="1" source="Kitchen.tsx"/>
- <layer id="1" name="Tile Layer 1" width="10" height="8">
-  <data encoding="csv">
-1,2,3,4,5,6,7,8,9,10,
-11,12,13,14,15,16,17,18,19,20,
-21,22,23,24,25,26,27,28,29,30,
-31,32,33,34,35,36,37,38,39,40,
-41,42,43,44,45,46,47,48,49,50,
-51,52,53,54,55,56,57,58,59,60,
-61,62,63,64,65,66,67,68,69,70,
-71,72,73,74,75,76,77,78,79,80
-</data>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="23" nextobjectid="39">
+ <tileset firstgid="1" name="kitchen tile" tilewidth="16" tileheight="16" tilecount="15" columns="3">
+  <image source="Tile_set.png" width="48" height="80"/>
+  <tile id="0">
+   <objectgroup draworder="index" id="2">
+    <object id="3" name="Worktop" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="1">
+   <objectgroup draworder="index" id="2">
+    <object id="1" name="Chopping" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="2">
+   <objectgroup draworder="index" id="2">
+    <object id="1" name="Pan" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="3">
+   <objectgroup draworder="index" id="2">
+    <object id="1" name="Tomato" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="4">
+   <objectgroup draworder="index" id="2">
+    <object id="1" name="Onion" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="5">
+   <objectgroup draworder="index" id="2">
+    <object id="1" name="Lettuce" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="6">
+   <objectgroup draworder="index" id="2">
+    <object id="1" name="Steak" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="7">
+   <objectgroup draworder="index" id="2">
+    <object id="1" name="Buns" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="8">
+   <objectgroup draworder="index" id="2">
+    <object id="1" name="Pan2" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="12">
+   <objectgroup draworder="index" id="2">
+    <object id="1" name="Plate" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="13">
+   <objectgroup draworder="index" id="2">
+    <object id="1" name="Bin" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+  <tile id="14">
+   <objectgroup draworder="index" id="2">
+    <object id="1" name="Service" x="0" y="0" width="16" height="16"/>
+   </objectgroup>
+  </tile>
+ </tileset>
+ <layer id="22" name="Kitchen" width="10" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgYELCjHgwFwFMrjoWIGYFYjY0cX40PkwfOxBzoKnjo9B93EDMA8XIfuZF4zMDMScUg/gARBcCIQ==
+  </data>
  </layer>
 </map>

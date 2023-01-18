@@ -1,6 +1,9 @@
 package com.team13.piazzapanic;
 
 import Sprites.Chef;
+import Tools.B2WorldCreator;
+import Tools.WorldContactListener;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -43,8 +46,6 @@ public class PlayScreen implements Screen {
 
     private Chef controlledChef;
 
-
-
     public PlayScreen(MainGame game){
         this.game = game;
 
@@ -63,9 +64,13 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0,0), true);
         b2dr = new Box2DDebugRenderer();
 
-        chef1 = new Chef(this.world);
-        chef2 = new Chef(this.world);
+        new B2WorldCreator(world, map);
+
+        chef1 = new Chef(this.world, 31.5F,65);
+        chef2 = new Chef(this.world, 128,65);
         controlledChef = chef1;
+
+        world.setContactListener(new WorldContactListener());
     }
 
     @Override
@@ -74,36 +79,37 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt){
+        if (chef1.chefCollision == false && chef2.chefCollision == false) {
+            if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A) ||
+                    Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)||
-                Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+                if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+                    controlledChef.b2body.setLinearVelocity(0, 0.5f);
+                }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-                controlledChef.b2body.setLinearVelocity(0,0.5f);
-            }
+                if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                    controlledChef.b2body.setLinearVelocity(0.5f, 0);
+                }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                controlledChef.b2body.setLinearVelocity(0.5f,0);
-            }
+                if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                    controlledChef.b2body.setLinearVelocity(-0.5f, 0);
+                }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                controlledChef.b2body.setLinearVelocity(-0.5f,0);
-            }
-
-            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-                controlledChef.b2body.setLinearVelocity(0,-0.5f);
-            }
+                if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                    controlledChef.b2body.setLinearVelocity(0, -0.5f);
+                }
             } else {
-                controlledChef.b2body.setLinearVelocity(0,0); }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            if (controlledChef.equals(chef1)){
-                controlledChef.b2body.setLinearVelocity(0,0);
-                controlledChef = chef2;
+                controlledChef.b2body.setLinearVelocity(0, 0);
             }
-            else {
-                controlledChef.b2body.setLinearVelocity(0,0);
-                controlledChef = chef1;
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+                if (controlledChef.equals(chef1)) {
+                    controlledChef.b2body.setLinearVelocity(0, 0);
+                    controlledChef = chef2;
+                } else {
+                    controlledChef.b2body.setLinearVelocity(0, 0);
+                    controlledChef = chef1;
+                }
             }
         }
     }
