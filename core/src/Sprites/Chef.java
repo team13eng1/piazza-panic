@@ -19,20 +19,51 @@ public class Chef extends Sprite {
     public boolean chefCollision;
     private float chefWidth;
     private float chefHeight;
-    private Texture wholeImage;
+    private Texture normalChef;
+    private Texture bunsChef;
+    private Texture bunsToastedChef;
+    private Texture burgerChef;
+    private Texture lettuceChef;
+    private Texture onionChef;
+    private Texture tomatoChef;
+    private Texture choppedLettuceChef;
+    private Texture choppedOnionChef;
+    private Texture choppedTomatoChef;
+    private Texture pattyChef;
+    private Texture completedBurgerChef;
+    private Texture meatChef;
     public enum State {UP, DOWN, LEFT, RIGHT}
     public State currentState;
-    public TextureRegion currentSkin;
+    private TextureRegion currentSkin;
+
+    private Texture skinNeeded;
+
+
+    //public Ingredient carrying;
     public Chef(World world, float startX, float startY) {
         initialX = startX;
         initialY = startY;
 
-        wholeImage = new Texture("Chef_skins.png");
+        normalChef = new Texture("Chef/Chef_normal.png");
+        bunsChef = new Texture("Chef/Chef_holding_buns.png");
+        bunsToastedChef = new Texture("Chef/Chef_holding_buns_toasted.png");
+        burgerChef = new Texture("Chef/Chef_holding_burger.png");
+        lettuceChef = new Texture("Chef/Chef_holding_lettuce.png");
+        onionChef = new Texture("Chef/Chef_holding_onion.png");
+        tomatoChef = new Texture("Chef/Chef_holding_tomato.png");
+        choppedLettuceChef = new Texture("Chef/Chef_holding_chopped_lettuce.png");
+        choppedOnionChef = new Texture("Chef/Chef_holding_chopped_onion.png");
+        choppedTomatoChef = new Texture("Chef/Chef_holding_chopped_tomato.png");
+        pattyChef = new Texture("Chef/Chef_holding_patty.png");
+        completedBurgerChef = new Texture("Chef/Chef_holding_front.png");
+        meatChef = new Texture("Chef/Chef_holding_meat.png");
+
+        skinNeeded = normalChef;
+
         this.world = world;
         currentState = State.DOWN;
 
         defineChef();
-        currentSkin = new TextureRegion(wholeImage, 32, 0, 29 ,46);
 
         chefWidth =  13/MainGame.PPM;
         chefHeight =  20/MainGame.PPM;
@@ -63,16 +94,16 @@ public class Chef extends Sprite {
         TextureRegion region;
         switch(currentState) {
             case UP:
-                region = new TextureRegion(wholeImage, 0, 0, 29, 46);
+                region = new TextureRegion(skinNeeded, 0, 0, 33, 46);
                 break;
             case DOWN:
-                region = new TextureRegion(wholeImage, 32, 0, 29, 46);
+                region = new TextureRegion(skinNeeded, 32, 0, 33, 46);
                 break;
             case LEFT:
-                region = new TextureRegion(wholeImage, 64, 0, 29, 46);
+                region = new TextureRegion(skinNeeded, 64, 0, 33, 46);
                 break;
             case RIGHT:
-                region = new TextureRegion(wholeImage, 96, 0, 29, 46);
+                region = new TextureRegion(skinNeeded, 96, 0, 33, 46);
                 break;
             default:
                 region = currentSkin;
@@ -101,7 +132,7 @@ public class Chef extends Sprite {
 
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
-        chefWidth =  5/MainGame.PPM;
+        chefWidth =  3/MainGame.PPM;
         chefHeight =  10/MainGame.PPM;
         shape.setAsBox(chefWidth, chefHeight);
 
