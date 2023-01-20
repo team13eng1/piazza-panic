@@ -6,7 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.team13.piazzapanic.MainGame;
-import jdk.tools.jmod.Main;
+
 
 public abstract class InteractiveTileObject {
     private World world;
