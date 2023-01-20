@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class Bin extends InteractiveTileObject {
-    public Bin(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
+public class CompletedDishStation extends InteractiveTileObject {
+    public CompletedDishStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
 
@@ -15,6 +15,6 @@ public class Bin extends InteractiveTileObject {
 
     @Override
     public void whenTouched() {
-        Gdx.app.log("Bin", "Collision");
+        Gdx.app.log("CompletedDish", "Collision");
     }
 }

@@ -1,5 +1,6 @@
 package Tools;
 
+import Sprites.*;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -36,16 +37,33 @@ public class B2WorldCreator {
                 bdef.position.set(position_x / MainGame.PPM, position_y / MainGame.PPM);
                 bdef.type = BodyDef.BodyType.StaticBody;
 
-                Body b2body = world.createBody(bdef);
 
                 // Adds the name of the tile to the body, in the future could add an instance of the matching class
-                b2body.setUserData(mapObject.getName());
-
-                PolygonShape shape = new PolygonShape();
-                shape.setAsBox((rectangle.getWidth() / 2f) / MainGame.PPM, (rectangle.getHeight() / 2f) / MainGame.PPM);
-                b2body.createFixture(shape, 0.0f);
-                shape.dispose();
-
+                if (mapObject.getName().equals("bin")) {
+                    new Bin(world, map, bdef, rectangle);
+                } else if(mapObject.getName().equals("worktop")){
+                    new Worktop(world, map, bdef, rectangle);
+                } else if(mapObject.getName().equals("chopping_board")) {
+                    new ChoppingBoard(world, map, bdef, rectangle);
+                } else if(mapObject.getName().equals("plate")){
+                    new PlateStation(world, map, bdef, rectangle);
+                } else if(mapObject.getName().equals("tomato")) {
+                    new TomatoStation(world, map, bdef, rectangle);
+                } else if(mapObject.getName().equals("lettuce")){
+                    new LettuceStation(world, map, bdef, rectangle);
+                } else if(mapObject.getName().equals("buns")) {
+                    new BunsStation(world, map, bdef, rectangle);
+                } else if(mapObject.getName().equals("onion")){
+                    new OnionStation(world, map, bdef, rectangle);
+                } else if(mapObject.getName().equals("pan1")) {
+                    new Pan(world, map, bdef, rectangle);
+                } else if(mapObject.getName().equals("steak")){
+                    new SteakStation(world, map, bdef, rectangle);
+                } else if(mapObject.getName().equals("pan2")) {
+                    new Pan(world, map, bdef, rectangle);
+                } else if(mapObject.getName().equals("completed_dish")){
+                    new CompletedDishStation(world, map, bdef, rectangle);
+                }
             }
         }
 

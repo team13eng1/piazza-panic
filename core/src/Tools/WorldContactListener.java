@@ -32,9 +32,10 @@ public class WorldContactListener implements ContactListener {
             }
             else if(objectFixt.getUserData() != null && objectFixt.getUserData() instanceof InteractiveTileObject){ // if chef interacts with tile
                 Gdx.app.log(" | Chef on tile contact | ", "");
-                InteractiveTileObject tile = ((InteractiveTileObject) fixB.getUserData());
-                System.out.printf(tile.getClass().getName());
-                tile.whenTouched();
+                System.out.printf(objectFixt.getUserData().getClass().getName());
+                if (objectFixt.getUserData().getClass().getName().equals("Sprites.Worktop")){
+                    System.out.printf("hello");
+                }
             }
         }
     }

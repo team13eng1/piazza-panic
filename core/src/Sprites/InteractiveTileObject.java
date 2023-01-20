@@ -1,6 +1,5 @@
 package Sprites;
 
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Rectangle;
@@ -11,28 +10,19 @@ import com.team13.piazzapanic.MainGame;
 public abstract class InteractiveTileObject {
     private World world;
     private TiledMap map;
-    private TiledMapTile tile;
-    private Rectangle bounds;
-    private Body body;
 
     protected Fixture fixture;
-    public InteractiveTileObject(World world, TiledMap map, Rectangle bounds){
+    public InteractiveTileObject(World world, TiledMap map, BodyDef bdef, Rectangle rectangle){
         this.world = world;
         this.map = map;
-        this.bounds = bounds;
 
-        BodyDef bdef = new BodyDef();
-        FixtureDef fdef = new FixtureDef();
+        Body b2body = world.createBody(bdef);
         PolygonShape shape = new PolygonShape();
+        shape.setAsBox((rectangle.getWidth() / 2f) / MainGame.PPM, (rectangle.getHeight() / 2f) / MainGame.PPM);
 
-        bdef.type = BodyDef.BodyType.StaticBody;
-        bdef.position.set((bounds.getX() + bounds.getWidth() / 2) / MainGame.PPM, (bounds.getY() + bounds.getHeight() / 2) / MainGame.PPM );
-
-        body = world.createBody(bdef);
-
-        shape.setAsBox(bounds.getWidth() / 2 / MainGame.PPM, bounds.getHeight() / 2 / MainGame.PPM);
+        FixtureDef fdef = new FixtureDef();
         fdef.shape = shape;
-        fixture = body.createFixture(fdef);
+        fixture = b2body.createFixture(fdef);
     }
 
     public abstract void whenTouched();

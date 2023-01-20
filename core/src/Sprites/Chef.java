@@ -126,15 +126,15 @@ public class Chef extends Sprite {
 
     public void defineChef(){
         BodyDef bdef = new BodyDef();
-        bdef.position.set(initialX / MainGame.PPM,initialY / MainGame.PPM);
+        bdef.position.set(initialX / MainGame.PPM,initialY/ MainGame.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
-        PolygonShape shape = new PolygonShape();
-        chefWidth =  3/MainGame.PPM;
-        chefHeight =  6/MainGame.PPM;
-        shape.setAsBox(chefWidth, chefHeight);
+        CircleShape shape = new CircleShape();
+        shape.setRadius(4/MainGame.PPM);
+        shape.setPosition(new Vector2(shape.getPosition().x + (0.5f / MainGame.PPM),shape.getPosition().y - (6 / MainGame.PPM)));
+
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
