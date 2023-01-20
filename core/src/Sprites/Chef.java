@@ -133,7 +133,7 @@ public class Chef extends Sprite {
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
         chefWidth =  3/MainGame.PPM;
-        chefHeight =  10/MainGame.PPM;
+        chefHeight =  6/MainGame.PPM;
         shape.setAsBox(chefWidth, chefHeight);
 
         fdef.shape = shape;
