@@ -12,9 +12,4 @@ public class ChoppingBoard extends InteractiveTileObject {
         fixture.setUserData(this);
 
     }
-
-    @Override
-    public void whenTouched() {
-        Gdx.app.log("ChoppingBoard", "Collision");
-    }
 }

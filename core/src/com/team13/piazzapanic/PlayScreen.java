@@ -1,6 +1,7 @@
 package com.team13.piazzapanic;
 
-import Sprites.Chef;
+import Ingredients.Steak;
+import Sprites.*;
 import Tools.B2WorldCreator;
 import Tools.WorldContactListener;
 
@@ -46,6 +47,7 @@ public class PlayScreen implements Screen {
 
     private Chef controlledChef;
 
+
     public PlayScreen(MainGame game){
         this.game = game;
 
@@ -69,7 +71,6 @@ public class PlayScreen implements Screen {
         chef1 = new Chef(this.world, 31.5F,65);
         chef2 = new Chef(this.world, 128,65);
         controlledChef = chef1;
-
         world.setContactListener(new WorldContactListener());
     }
 
@@ -79,7 +80,16 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt){
-        if (chef1.chefCollision == false && chef2.chefCollision == false) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            if (controlledChef.equals(chef1)) {
+                controlledChef.b2body.setLinearVelocity(0, 0);
+                controlledChef = chef2;
+            } else {
+                controlledChef.b2body.setLinearVelocity(0, 0);
+                controlledChef = chef1;
+            }
+        }
+        if (controlledChef.getUserControlChef() == true) {
             if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A) ||
                     Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
 
@@ -101,14 +111,60 @@ public class PlayScreen implements Screen {
             } else {
                 controlledChef.b2body.setLinearVelocity(0, 0);
             }
+            if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+                if(controlledChef.getTouchingTile() != null){
+                    InteractiveTileObject tile = (InteractiveTileObject) controlledChef.getTouchingTile().getUserData();
+                    String tileName = tile.getClass().getName();
+                    if (controlledChef.getInHands() == null) {
+                        switch (tileName) {
+                            case "Sprites.TomatoStation":
+                                TomatoStation tomatoTile = (TomatoStation) tile;
+                                controlledChef.setInHands(tomatoTile.getIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHands());
+                                break;
+                            case "Sprites.BunsStation":
+                                BunsStation bunTile = (BunsStation) tile;
+                                controlledChef.setInHands(bunTile.getIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHands());
+                                break;
+                            case "Sprites.OnionStation":
+                                OnionStation onionTile = (OnionStation) tile;
+                                controlledChef.setInHands(onionTile.getIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHands());
+                                break;
+                            case "Sprites.SteakStation":
+                                SteakStation steakTile = (SteakStation) tile;
+                                controlledChef.setInHands(steakTile.getIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHands());
+                                break;
+                            case "Sprites.LettuceStation":
+                                LettuceStation lettuceTile = (LettuceStation) tile;
+                                controlledChef.setInHands(lettuceTile.getIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHands());
+                                break;
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-                if (controlledChef.equals(chef1)) {
-                    controlledChef.b2body.setLinearVelocity(0, 0);
-                    controlledChef = chef2;
-                } else {
-                    controlledChef.b2body.setLinearVelocity(0, 0);
-                    controlledChef = chef1;
+                        }
+                    } else {
+                        switch (tileName) {
+                            case "Sprites.Bin":
+                                controlledChef.setInHands(null);
+                                controlledChef.setChefSkin(null);
+                                break;
+
+                            case "Sprites.ChoppingBoard":
+                               if(controlledChef.getInHands().prepareTime > 0){
+                                    controlledChef.setUserControlChef(false);
+                                }
+                               break;
+                            case "Sprites.PlateStation":
+                                controlledChef.dropItemOn(tile, controlledChef.getInHands());
+                                controlledChef.setChefSkin(null);
+                                break;
+
+
+                        }
+                    }
+
                 }
             }
         }
@@ -132,7 +188,6 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         renderer.render();
-
         b2dr.render(world, gamecam.combined);
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);

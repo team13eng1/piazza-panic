@@ -13,8 +13,4 @@ public class CompletedDishStation extends InteractiveTileObject {
 
     }
 
-    @Override
-    public void whenTouched() {
-        Gdx.app.log("CompletedDish", "Collision");
-    }
 }

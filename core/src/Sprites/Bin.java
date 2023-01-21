@@ -12,9 +12,4 @@ public class Bin extends InteractiveTileObject {
         fixture.setUserData(this);
 
     }
-
-    @Override
-    public void whenTouched() {
-        Gdx.app.log("Bin", "Collision");
-    }
 }

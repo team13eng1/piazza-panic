@@ -12,7 +12,8 @@ public abstract class InteractiveTileObject {
     private TiledMap map;
 
     protected Fixture fixture;
-    public InteractiveTileObject(World world, TiledMap map, BodyDef bdef, Rectangle rectangle){
+
+    public InteractiveTileObject(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         this.world = world;
         this.map = map;
 
@@ -24,6 +25,4 @@ public abstract class InteractiveTileObject {
         fdef.shape = shape;
         fixture = b2body.createFixture(fdef);
     }
-
-    public abstract void whenTouched();
 }

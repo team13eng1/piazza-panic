@@ -1,5 +1,6 @@
 package Sprites;
 
+import Ingredients.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,8 +16,8 @@ public class Chef extends Sprite {
 
 
     public Vector2 startVector;
-    private float chefCollisionTimer;
-    public boolean chefCollision;
+    private float waitTimer;
+    public boolean chefOnChefCollision;
     private float chefWidth;
     private float chefHeight;
     private Texture normalChef;
@@ -38,8 +39,11 @@ public class Chef extends Sprite {
 
     private Texture skinNeeded;
 
+    private Fixture whatTouching;
 
-    //public Ingredient carrying;
+    private Ingredient inHands;
+
+    private Boolean userControlChef;
     public Chef(World world, float startX, float startY) {
         initialX = startX;
         initialY = startY;
@@ -68,22 +72,34 @@ public class Chef extends Sprite {
         chefWidth =  13/MainGame.PPM;
         chefHeight =  20/MainGame.PPM;
         setBounds(0,0,chefWidth, chefHeight);
-        chefCollision = false;
-        chefCollisionTimer = 0;
+        chefOnChefCollision = false;
+        waitTimer = 0;
         startVector = new Vector2(0,0);
+        whatTouching = null;
+        inHands = null;
+        userControlChef = true;
     }
 
     public void update(float dt){
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         currentSkin= getSkin(dt);
         setRegion(currentSkin);
-
-        if(chefCollision) {
-            chefCollisionTimer += dt;
+        if(userControlChef == false && chefOnChefCollision == true) {
+            waitTimer += dt;
             b2body.setLinearVelocity(new Vector2(startVector.x * -1, startVector.y * -1));
-            if (chefCollisionTimer > 0.3f) {
-                chefCollision = false;
-                chefCollisionTimer = 0;
+            if (waitTimer > 0.3f) {
+                chefOnChefCollision = false;
+                userControlChef = true;
+                waitTimer = 0;
+            }
+        } else if (userControlChef == false && chefOnChefCollision == false && getInHands().prepareTime > 0){
+            waitTimer += dt;
+            if(waitTimer > inHands.prepareTime){
+                inHands.prepareTime = 0;
+                inHands.setPrepared(true);
+                userControlChef = true;
+                waitTimer = 0;
+                setChefSkin(inHands);
             }
         }
     }
@@ -97,7 +113,7 @@ public class Chef extends Sprite {
                 region = new TextureRegion(skinNeeded, 0, 0, 33, 46);
                 break;
             case DOWN:
-                region = new TextureRegion(skinNeeded, 32, 0, 33, 46);
+                region = new TextureRegion(skinNeeded, 33, 0, 33, 46);
                 break;
             case LEFT:
                 region = new TextureRegion(skinNeeded, 64, 0, 33, 46);
@@ -140,8 +156,51 @@ public class Chef extends Sprite {
         b2body.createFixture(fdef).setUserData(this);
     }
 
+    public void setChefSkin(Object item) {
+        if (item == null) {
+            skinNeeded = normalChef;
+        } else if (item instanceof Lettuce) {
+            if (inHands.isPrepared()) {
+                skinNeeded = choppedLettuceChef;
+            } else {
+                skinNeeded = lettuceChef;
+            }
+        } else if (item instanceof Tomato) {
+            if (inHands.isPrepared()) {
+                skinNeeded = choppedTomatoChef;
+            } else {
+                skinNeeded = tomatoChef;
+            }
+        } else if (item instanceof Steak) {
+            if (inHands.isPrepared()) {
+                skinNeeded = pattyChef;
+            } else {
+                skinNeeded = meatChef;
+                }
+            } else if (item instanceof Onion) {
+            if (inHands.isPrepared()) {
+                skinNeeded = choppedOnionChef;
+            } else {
+                skinNeeded = onionChef;
+            }
+        } else if (item instanceof Tomato) {
+            if (inHands.isPrepared()) {
+                skinNeeded = choppedTomatoChef;
+            } else {
+                skinNeeded = tomatoChef;
+            }
+        } else if (item instanceof Bun) {
+            if (inHands.isCooked()) {
+                skinNeeded = bunsToastedChef;
+            } else {
+                skinNeeded = bunsChef;
+            }
+        }
+    }
+
     public void chefsColliding(){
-        chefCollision = true;
+        userControlChef = false;
+        chefOnChefCollision = true;
         setStartVector();
     }
 
@@ -149,4 +208,46 @@ public class Chef extends Sprite {
         startVector = new Vector2(b2body.getLinearVelocity().x,b2body.getLinearVelocity().y);
 
     }
+
+    public void setTouchingTile(Fixture obj){
+        this.whatTouching = obj;
+    }
+
+    public Fixture getTouchingTile() {
+        if (whatTouching == null) {
+            return null;
+        } else {
+            return whatTouching;
+        }
+    }
+    public Ingredient getInHands(){
+        return inHands;
+    }
+
+    public void setInHands(Ingredient ing){
+        inHands = ing;
+    }
+
+    public void setUserControlChef(boolean value){
+        userControlChef = value;
+
+    }
+    public boolean getUserControlChef(){
+        return userControlChef;
+    }
+
+    public void dropItemOn(InteractiveTileObject station,Ingredient ing){
+        if (station instanceof PlateStation){
+            ((PlateStation) station).dropItem(ing);
+        }
+        setInHands(null);
+
+    }
+
+
+
+
+
+
+
 }

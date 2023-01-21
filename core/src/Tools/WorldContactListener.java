@@ -12,30 +12,23 @@ public class WorldContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
 
-        Gdx.app.log("Begin contact", "");
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
 
         if (fixA.getUserData() instanceof Chef || fixB.getUserData() instanceof Chef) {
-            Gdx.app.log(" | Instance of chef found | ", "");
             Fixture chefFixt = fixA.getUserData() instanceof Chef ? fixA : fixB;
             Fixture objectFixt = fixA.getUserData() instanceof Chef ? fixB: fixA;
 
             if(fixA.getUserData() instanceof Chef && fixB.getUserData() instanceof Chef){ // if both are chef
-                Gdx.app.log(" | Chef on chef contact | ", "");
                 Chef chef = ((Chef) fixA.getUserData());
                 Chef chefb = ((Chef) fixB.getUserData());
-                System.out.printf(chef.getClass().getName());
                 chef.chefsColliding();
                 chefb.chefsColliding();
 
             }
             else if(objectFixt.getUserData() != null && objectFixt.getUserData() instanceof InteractiveTileObject){ // if chef interacts with tile
-                Gdx.app.log(" | Chef on tile contact | ", "");
-                System.out.printf(objectFixt.getUserData().getClass().getName());
-                if (objectFixt.getUserData().getClass().getName().equals("Sprites.Worktop")){
-                    System.out.printf("hello");
-                }
+                ((Chef) chefFixt.getUserData()).setTouchingTile(objectFixt);
+
             }
         }
     }
@@ -43,8 +36,20 @@ public class WorldContactListener implements ContactListener {
 
     @Override
     public void endContact(Contact contact) {
-        Gdx.app.log("End contact", "");
+        Fixture fixA = contact.getFixtureA();
+        Fixture fixB = contact.getFixtureB();
 
+        if (fixA.getUserData() instanceof Chef || fixB.getUserData() instanceof Chef) {
+            Fixture chefFixt = fixA.getUserData() instanceof Chef ? fixA : fixB;
+            Fixture objectFixt = fixA.getUserData() instanceof Chef ? fixB: fixA;
+
+            if(objectFixt.getUserData() != null && objectFixt.getUserData() instanceof InteractiveTileObject){ // if chef interacts with tile
+                System.out.printf(objectFixt.getUserData().getClass().getName());
+                ((Chef) chefFixt.getUserData()).setTouchingTile(null);
+                System.out.printf("end contact");
+
+            }
+        }
     }
 
     @Override

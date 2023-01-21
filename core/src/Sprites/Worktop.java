@@ -12,9 +12,4 @@ public class Worktop extends InteractiveTileObject {
         fixture.setUserData(this);
 
     }
-
-    @Override
-    public void whenTouched() {
-        Gdx.app.log("Worktop", "Collision");
-    }
 }

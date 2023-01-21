@@ -12,9 +12,4 @@ public class Pan extends InteractiveTileObject {
         fixture.setUserData(this);
 
     }
-
-    @Override
-    public void whenTouched() {
-        Gdx.app.log("Pan", "Collision");
-    }
 }
