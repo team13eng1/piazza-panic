@@ -40,31 +40,34 @@ public class B2WorldCreator {
 
                 if (mapObject.getName().equals("bin")) {
                     new Bin(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("worktop")){
+                } else if (mapObject.getName().equals("worktop")) {
                     new Worktop(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("chopping_board")) {
+                } else if (mapObject.getName().equals("chopping_board")) {
                     new ChoppingBoard(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("plate")){
+                } else if (mapObject.getName().equals("plate")) {
                     screen.plateStation = new PlateStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("tomato")) {
+                } else if (mapObject.getName().equals("tomato")) {
                     new TomatoStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("lettuce")){
+                } else if (mapObject.getName().equals("lettuce")) {
                     new LettuceStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("buns")) {
+                } else if (mapObject.getName().equals("buns")) {
                     new BunsStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("onion")){
+                } else if (mapObject.getName().equals("onion")) {
                     new OnionStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("pan1")) {
+                } else if (mapObject.getName().equals("pan1")) {
                     new Pan(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("steak")){
+                } else if (mapObject.getName().equals("steak")) {
                     new SteakStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("pan2")) {
+                } else if (mapObject.getName().equals("pan2")) {
                     new Pan(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("completed_dish")){
+                } else if (mapObject.getName().equals("completed_dish")) {
                     new CompletedDishStation(world, map, bdef, rectangle);
+                } else if (mapObject.getName().equals("order_top")) {
+                    PlayScreen.trayX = rectangle.x;
+                    PlayScreen.trayY = rectangle.y;
                 }
+
             }
         }
-
     }
 }

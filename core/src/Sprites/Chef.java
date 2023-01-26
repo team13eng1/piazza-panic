@@ -36,6 +36,8 @@ public class Chef extends Sprite {
     private Texture pattyChef;
     private Texture completedBurgerChef;
     private Texture meatChef;
+    private Texture saladRecipe;
+    private Texture burgerRecipe;
     private Texture saladChef;
     public enum State {UP, DOWN, LEFT, RIGHT}
     public State currentState;
@@ -67,6 +69,10 @@ public class Chef extends Sprite {
         completedBurgerChef = new Texture("Chef/Chef_holding_front.png");
         meatChef = new Texture("Chef/Chef_holding_meat.png");
         saladChef = new Texture("Chef/Chef_holding_salad.png");
+        saladChef = new Texture("Chef/Chef_holding_salad.png");
+        burgerRecipe = new Texture("Food/burger_recipe.png");
+        saladRecipe = new Texture("Food/salad_recipe.png");
+
 
         skinNeeded = normalChef;
 

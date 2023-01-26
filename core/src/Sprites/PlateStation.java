@@ -12,8 +12,8 @@ import java.util.List;
 
 public class PlateStation extends InteractiveTileObject {
     private List<Ingredient> plate;
-    private Recipe burgerRecipe;
-    private Recipe saladRecipe;
+    public static Recipe burgerRecipe;
+    public static Recipe saladRecipe;
 
     private Recipe recipeDone;
 

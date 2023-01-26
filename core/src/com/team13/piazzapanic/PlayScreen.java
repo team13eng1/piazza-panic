@@ -3,6 +3,7 @@ package com.team13.piazzapanic;
 import Ingredients.Ingredient;
 import Recipe.Recipe;
 import Sprites.*;
+import Recipe.Order;
 import Tools.B2WorldCreator;
 import Tools.WorldContactListener;
 
@@ -21,6 +22,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.ArrayList;
+
 public class PlayScreen implements Screen {
 
     private MainGame game;
@@ -28,6 +31,8 @@ public class PlayScreen implements Screen {
     private OrthographicCamera gamecam;
     private Viewport gameport;
     private HUD hud;
+
+    private Orders orders;
 
     private TmxMapLoader mapLoader;
     private TiledMap map;
@@ -41,7 +46,12 @@ public class PlayScreen implements Screen {
 
     private Chef controlledChef;
 
+    public ArrayList<Order> ordersArray;
+
     public PlateStation plateStation;
+
+    public static float trayX;
+    public static float trayY;
 
 
     public PlayScreen(MainGame game){
@@ -53,6 +63,8 @@ public class PlayScreen implements Screen {
         gameport = new FitViewport(MainGame.V_WIDTH / MainGame.PPM, MainGame.V_HEIGHT / MainGame.PPM, gamecam);
         // create HUD for score & time
         hud = new HUD(game.batch);
+        // create orders hud
+        orders = new Orders(game.batch);
         // create map
         mapLoader = new TmxMapLoader(new InternalFileHandleResolver());
         map = mapLoader.load("Kitchen.tmx");
@@ -67,6 +79,9 @@ public class PlayScreen implements Screen {
         chef2 = new Chef(this.world, 128,65);
         controlledChef = chef1;
         world.setContactListener(new WorldContactListener());
+
+        ordersArray = new ArrayList<>();
+        createOrder();
 
     }
 
@@ -186,6 +201,28 @@ public class PlayScreen implements Screen {
 
     }
 
+    public void createOrder() {
+        Texture burger_recipe = new Texture("Food/burger_recipe.png");
+        Texture salad_recipe = new Texture("Food/salad_recipe.png");
+        Order order1 = new Order(PlateStation.burgerRecipe, burger_recipe);
+        Order order2 = new Order(PlateStation.saladRecipe, salad_recipe);
+        Order order3 = new Order(PlateStation.burgerRecipe, burger_recipe);
+        Order order4 = new Order(PlateStation.saladRecipe, salad_recipe);
+        Order order5 = new Order(PlateStation.saladRecipe, salad_recipe);
+        ordersArray.add(order1);
+        ordersArray.add(order2);
+        ordersArray.add(order3);
+        ordersArray.add(order4);
+        ordersArray.add(order5);
+    }
+    public void updateOrder(){
+        if(ordersArray.size()==0) return; // end game
+        if(ordersArray.get(0).orderComplete){
+            ordersArray.remove(0);
+        }
+        ordersArray.get(0).create(trayX + (20/MainGame.PPM), trayY + ((20/MainGame.PPM)), game.batch);
+    }
+
     @Override
     public void render(float delta){
         update(delta);
@@ -198,9 +235,9 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
-
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
+        updateOrder();
         chef1.draw(game.batch);
         chef2.draw(game.batch);
         if (plateStation.getPlate().size() > 0){
