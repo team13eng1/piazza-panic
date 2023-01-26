@@ -72,7 +72,6 @@ public class PlayScreen implements Screen {
         gamecam.position.set(gameport.getWorldWidth() / 2, gameport.getWorldHeight() / 2, 0);
 
         world = new World(new Vector2(0,0), true);
-        b2dr = new Box2DDebugRenderer();
         new B2WorldCreator(world, map, this);
 
         chef1 = new Chef(this.world, 31.5F,65);
@@ -101,27 +100,26 @@ public class PlayScreen implements Screen {
             }
         }
         if (controlledChef.getUserControlChef() == true) {
-            if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A) ||
-                    Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+                float xVelocity = 0;
+                float yVelocity = 0;
 
                 if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-                    controlledChef.b2body.setLinearVelocity(0, 0.5f);
+                    yVelocity += 0.5f;
                 }
-
-                if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                    controlledChef.b2body.setLinearVelocity(0.5f, 0);
-                }
-
                 if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                    controlledChef.b2body.setLinearVelocity(-0.5f, 0);
+                    xVelocity -= 0.5f;
                 }
-
                 if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-                    controlledChef.b2body.setLinearVelocity(0, -0.5f);
+                    yVelocity -= 0.5f;
                 }
-            } else {
-                controlledChef.b2body.setLinearVelocity(0, 0);
+                if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                    xVelocity += 0.5f;
+                }
+                controlledChef.b2body.setLinearVelocity(xVelocity, yVelocity);
             }
+            else {
+                controlledChef.b2body.setLinearVelocity(0, 0);
+        }
             if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
                 if(controlledChef.getTouchingTile() != null){
                     InteractiveTileObject tile = (InteractiveTileObject) controlledChef.getTouchingTile().getUserData();
@@ -183,13 +181,20 @@ public class PlayScreen implements Screen {
                                 if (controlledChef.getInHandsIng().isPrepared() && controlledChef.getInHandsIng().cookTime > 0){
                                     controlledChef.setUserControlChef(false);
                                 }
+                                break;
+                            case "Sprites.CompletedDishStation":
+                                if(controlledChef.getInHandsRecipe().getClass().equals(ordersArray.get(0).recipe.getClass())){
+                                    controlledChef.dropItemOn(tile, controlledChef.getInHandsRecipe());
+                                    ordersArray.get(0).orderComplete = true;
+                                    controlledChef.setChefSkin(null);
+                                }
+                                break;
                         }
                     }
 
                 }
             }
         }
-    }
     public void update(float dt){
         handleInput(dt);
 
@@ -220,7 +225,7 @@ public class PlayScreen implements Screen {
         if(ordersArray.get(0).orderComplete){
             ordersArray.remove(0);
         }
-        ordersArray.get(0).create(trayX + (20/MainGame.PPM), trayY + ((20/MainGame.PPM)), game.batch);
+        ordersArray.get(0).create(trayX, trayY, game.batch);
     }
 
     @Override
@@ -231,7 +236,6 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         renderer.render();
-        b2dr.render(world, gamecam.combined);
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();

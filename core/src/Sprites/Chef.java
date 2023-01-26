@@ -280,6 +280,12 @@ public class Chef extends Sprite {
         setInHandsRecipe(null);
     }
 
+    public void dropItemOn(InteractiveTileObject station,Recipe recipe){
+        if (station instanceof CompletedDishStation){
+        }
+        setInHandsRecipe(null);
+    }
+
     public void pickUpItemFrom(InteractiveTileObject station){
         if (station instanceof PlateStation){
             PlateStation pStation = (PlateStation) station;

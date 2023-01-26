@@ -33,41 +33,44 @@ public class PlateStation extends InteractiveTileObject {
     }
 
     public void checkRecipeCreated(){
-        if (plate.size() == burgerRecipe.getIngredients().size() || plate.size() == saladRecipe.getIngredients().size()) {
+        if (plate.size() == burgerRecipe.getIngredients().size()) {
             boolean burgerSame = true;
             for (int i = 0; i < plate.size(); i++) {
-                if (plate.get(i).getClass().getName().equals(burgerRecipe.getIngredients().get(i).getClass().getName())) {
-                    if (plate.get(i).isPrepared() && plate.get(i).isCooked()) {
-                    } else {
-                        burgerSame = false;
+                Ingredient ing = plate.get(i);
+                for (int j = 0; j < burgerRecipe.getIngredients().size(); j++) {
+                    if (ing.getClass().toString().equals(burgerRecipe.getIngredients().get(j))) {
+                        if (ing.isPrepared()) {
+                        } else {
+                            burgerSame = false;
+                        }
                     }
-                } else {
-                    burgerSame = false;
                 }
             }
             if (burgerSame) {
                 plate.clear();
                 recipeDone = burgerRecipe;
-            } else {
-                boolean saladSame = true;
-                for (int i = 0; i < plate.size(); i++) {
-                    Ingredient ing = plate.get(i);
-                    for (int j = 0; j < saladRecipe.getIngredients().size(); j++) {
-                        if (ing.getClass().toString().equals(saladRecipe.getIngredients().get(j))) {
-                            if (ing.isPrepared()) {
-                            } else {
-                                saladSame = false;
-                            }
+            }
+        }
+        if (plate.size() == saladRecipe.getIngredients().size()) {
+            boolean saladSame = true;
+            for (int i = 0; i < plate.size(); i++) {
+                Ingredient ing = plate.get(i);
+                for (int j = 0; j < saladRecipe.getIngredients().size(); j++) {
+                    if (ing.getClass().toString().equals(saladRecipe.getIngredients().get(j))) {
+                        if (ing.isPrepared()) {
+                        } else {
+                            saladSame = false;
                         }
-                    }
-                    if (saladSame) {
-                        plate.clear();
-                        recipeDone = saladRecipe;
                     }
                 }
             }
+            if (saladSame) {
+                plate.clear();
+                recipeDone = saladRecipe;
+            }
         }
     }
+
     public ArrayList getPlate(){
         return (ArrayList) this.plate;
     }

@@ -12,5 +12,4 @@ public class CompletedDishStation extends InteractiveTileObject {
         fixture.setUserData(this);
 
     }
-
 }
