@@ -1,5 +1,6 @@
 package Sprites;
 
+import Ingredients.Ingredient;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Rectangle;
@@ -13,9 +14,12 @@ public abstract class InteractiveTileObject {
 
     protected Fixture fixture;
 
+    protected BodyDef bdefNew;
     public InteractiveTileObject(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         this.world = world;
         this.map = map;
+
+        bdefNew = bdef;
 
         Body b2body = world.createBody(bdef);
         PolygonShape shape = new PolygonShape();

@@ -9,10 +9,11 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.team13.piazzapanic.MainGame;
+import com.team13.piazzapanic.PlayScreen;
 
 public class B2WorldCreator {
 
-    public B2WorldCreator(World world, TiledMap map) {
+    public B2WorldCreator(World world, TiledMap map, PlayScreen screen) {
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
@@ -37,8 +38,6 @@ public class B2WorldCreator {
                 bdef.position.set(position_x / MainGame.PPM, position_y / MainGame.PPM);
                 bdef.type = BodyDef.BodyType.StaticBody;
 
-
-                // Adds the name of the tile to the body, in the future could add an instance of the matching class
                 if (mapObject.getName().equals("bin")) {
                     new Bin(world, map, bdef, rectangle);
                 } else if(mapObject.getName().equals("worktop")){
@@ -46,7 +45,7 @@ public class B2WorldCreator {
                 } else if(mapObject.getName().equals("chopping_board")) {
                     new ChoppingBoard(world, map, bdef, rectangle);
                 } else if(mapObject.getName().equals("plate")){
-                    new PlateStation(world, map, bdef, rectangle);
+                    screen.plateStation = new PlateStation(world, map, bdef, rectangle);
                 } else if(mapObject.getName().equals("tomato")) {
                     new TomatoStation(world, map, bdef, rectangle);
                 } else if(mapObject.getName().equals("lettuce")){

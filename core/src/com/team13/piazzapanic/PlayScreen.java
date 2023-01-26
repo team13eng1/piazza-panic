@@ -1,6 +1,7 @@
 package com.team13.piazzapanic;
 
-import Ingredients.Steak;
+import Ingredients.Ingredient;
+import Recipe.Recipe;
 import Sprites.*;
 import Tools.B2WorldCreator;
 import Tools.WorldContactListener;
@@ -12,19 +13,12 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PlayScreen implements Screen {
@@ -47,6 +41,8 @@ public class PlayScreen implements Screen {
 
     private Chef controlledChef;
 
+    public PlateStation plateStation;
+
 
     public PlayScreen(MainGame game){
         this.game = game;
@@ -65,13 +61,13 @@ public class PlayScreen implements Screen {
 
         world = new World(new Vector2(0,0), true);
         b2dr = new Box2DDebugRenderer();
-
-        new B2WorldCreator(world, map);
+        new B2WorldCreator(world, map, this);
 
         chef1 = new Chef(this.world, 31.5F,65);
         chef2 = new Chef(this.world, 128,65);
         controlledChef = chef1;
         world.setContactListener(new WorldContactListener());
+
     }
 
     @Override
@@ -115,53 +111,63 @@ public class PlayScreen implements Screen {
                 if(controlledChef.getTouchingTile() != null){
                     InteractiveTileObject tile = (InteractiveTileObject) controlledChef.getTouchingTile().getUserData();
                     String tileName = tile.getClass().getName();
-                    if (controlledChef.getInHands() == null) {
+                    if (controlledChef.getInHandsIng() == null && controlledChef.getInHandsRecipe() == null) {
                         switch (tileName) {
                             case "Sprites.TomatoStation":
                                 TomatoStation tomatoTile = (TomatoStation) tile;
-                                controlledChef.setInHands(tomatoTile.getIngredient());
-                                controlledChef.setChefSkin(controlledChef.getInHands());
+                                controlledChef.setInHandsIng(tomatoTile.getIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHandsIng());
                                 break;
                             case "Sprites.BunsStation":
                                 BunsStation bunTile = (BunsStation) tile;
-                                controlledChef.setInHands(bunTile.getIngredient());
-                                controlledChef.setChefSkin(controlledChef.getInHands());
+                                controlledChef.setInHandsIng(bunTile.getIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHandsIng());
                                 break;
                             case "Sprites.OnionStation":
                                 OnionStation onionTile = (OnionStation) tile;
-                                controlledChef.setInHands(onionTile.getIngredient());
-                                controlledChef.setChefSkin(controlledChef.getInHands());
+                                controlledChef.setInHandsIng(onionTile.getIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHandsIng());
                                 break;
                             case "Sprites.SteakStation":
                                 SteakStation steakTile = (SteakStation) tile;
-                                controlledChef.setInHands(steakTile.getIngredient());
-                                controlledChef.setChefSkin(controlledChef.getInHands());
+                                controlledChef.setInHandsIng(steakTile.getIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHandsIng());
                                 break;
                             case "Sprites.LettuceStation":
                                 LettuceStation lettuceTile = (LettuceStation) tile;
-                                controlledChef.setInHands(lettuceTile.getIngredient());
-                                controlledChef.setChefSkin(controlledChef.getInHands());
+                                controlledChef.setInHandsIng(lettuceTile.getIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHandsIng());
                                 break;
+                            case "Sprites.PlateStation":
+                                if(plateStation.getPlate().size() > 0 || plateStation.getCompletedRecipe() != null){
+                                    controlledChef.pickUpItemFrom(tile);
+
+                                }
 
                         }
                     } else {
                         switch (tileName) {
                             case "Sprites.Bin":
-                                controlledChef.setInHands(null);
+                                controlledChef.setInHandsRecipe(null);
+                                controlledChef.setInHandsIng(null);
                                 controlledChef.setChefSkin(null);
                                 break;
 
                             case "Sprites.ChoppingBoard":
-                               if(controlledChef.getInHands().prepareTime > 0){
+                               if(controlledChef.getInHandsIng().prepareTime > 0){
                                     controlledChef.setUserControlChef(false);
                                 }
                                break;
                             case "Sprites.PlateStation":
-                                controlledChef.dropItemOn(tile, controlledChef.getInHands());
+                                if (controlledChef.getInHandsRecipe() == null){
+                                controlledChef.dropItemOn(tile, controlledChef.getInHandsIng());
                                 controlledChef.setChefSkin(null);
+                            }
                                 break;
-
-
+                            case "Sprites.Pan":
+                                if (controlledChef.getInHandsIng().isPrepared() && controlledChef.getInHandsIng().cookTime > 0){
+                                    controlledChef.setUserControlChef(false);
+                                }
                         }
                     }
 
@@ -197,6 +203,15 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         chef1.draw(game.batch);
         chef2.draw(game.batch);
+        if (plateStation.getPlate().size() > 0){
+            for(Object ing : plateStation.getPlate()){
+                Ingredient ingNew = (Ingredient) ing;
+                ingNew.create(plateStation.getX(), plateStation.getY(),game.batch);
+            }
+        } else if (plateStation.getCompletedRecipe() != null){
+            Recipe recipeNew = plateStation.getCompletedRecipe();
+            recipeNew.create(plateStation.getX(), plateStation.getY(), game.batch);
+        }
         game.batch.end();
     }
 

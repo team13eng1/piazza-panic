@@ -1,6 +1,9 @@
 package Sprites;
 
 import Ingredients.*;
+import Recipe.BurgerRecipe;
+import Recipe.Recipe;
+import Recipe.SaladRecipe;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -33,6 +36,7 @@ public class Chef extends Sprite {
     private Texture pattyChef;
     private Texture completedBurgerChef;
     private Texture meatChef;
+    private Texture saladChef;
     public enum State {UP, DOWN, LEFT, RIGHT}
     public State currentState;
     private TextureRegion currentSkin;
@@ -41,7 +45,8 @@ public class Chef extends Sprite {
 
     private Fixture whatTouching;
 
-    private Ingredient inHands;
+    private Ingredient inHandsIng;
+    private Recipe inHandsRecipe;
 
     private Boolean userControlChef;
     public Chef(World world, float startX, float startY) {
@@ -61,6 +66,7 @@ public class Chef extends Sprite {
         pattyChef = new Texture("Chef/Chef_holding_patty.png");
         completedBurgerChef = new Texture("Chef/Chef_holding_front.png");
         meatChef = new Texture("Chef/Chef_holding_meat.png");
+        saladChef = new Texture("Chef/Chef_holding_salad.png");
 
         skinNeeded = normalChef;
 
@@ -76,15 +82,16 @@ public class Chef extends Sprite {
         waitTimer = 0;
         startVector = new Vector2(0,0);
         whatTouching = null;
-        inHands = null;
+        inHandsIng = null;
+        inHandsRecipe = null;
         userControlChef = true;
     }
 
-    public void update(float dt){
+    public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-        currentSkin= getSkin(dt);
+        currentSkin = getSkin(dt);
         setRegion(currentSkin);
-        if(userControlChef == false && chefOnChefCollision == true) {
+        if (userControlChef == false && chefOnChefCollision == true) {
             waitTimer += dt;
             b2body.setLinearVelocity(new Vector2(startVector.x * -1, startVector.y * -1));
             if (waitTimer > 0.3f) {
@@ -92,14 +99,23 @@ public class Chef extends Sprite {
                 userControlChef = true;
                 waitTimer = 0;
             }
-        } else if (userControlChef == false && chefOnChefCollision == false && getInHands().prepareTime > 0){
+        } else if (userControlChef == false && chefOnChefCollision == false && getInHandsIng().prepareTime > 0) {
             waitTimer += dt;
-            if(waitTimer > inHands.prepareTime){
-                inHands.prepareTime = 0;
-                inHands.setPrepared(true);
+            if (waitTimer > inHandsIng.prepareTime) {
+                inHandsIng.prepareTime = 0;
+                inHandsIng.setPrepared(true);
                 userControlChef = true;
                 waitTimer = 0;
-                setChefSkin(inHands);
+                setChefSkin(inHandsIng);
+            }
+        } else if (userControlChef == false && chefOnChefCollision == false && getInHandsIng().isPrepared() && inHandsIng.cookTime > 0){
+            waitTimer += dt;
+            if (waitTimer > inHandsIng.cookTime) {
+                inHandsIng.cookTime = 0;
+                inHandsIng.setCooked(true);
+                userControlChef = true;
+                waitTimer = 0;
+                setChefSkin(inHandsIng);
             }
         }
     }
@@ -160,41 +176,47 @@ public class Chef extends Sprite {
         if (item == null) {
             skinNeeded = normalChef;
         } else if (item instanceof Lettuce) {
-            if (inHands.isPrepared()) {
+            if (inHandsIng.isPrepared()) {
                 skinNeeded = choppedLettuceChef;
             } else {
                 skinNeeded = lettuceChef;
             }
         } else if (item instanceof Tomato) {
-            if (inHands.isPrepared()) {
+            if (inHandsIng.isPrepared()) {
                 skinNeeded = choppedTomatoChef;
             } else {
                 skinNeeded = tomatoChef;
             }
         } else if (item instanceof Steak) {
-            if (inHands.isPrepared()) {
+            if (inHandsIng.isPrepared() && inHandsIng.isCooked()) {
+                skinNeeded = burgerChef;
+            } else if (inHandsIng.isPrepared()){
                 skinNeeded = pattyChef;
-            } else {
+                } else {
                 skinNeeded = meatChef;
-                }
+            }
             } else if (item instanceof Onion) {
-            if (inHands.isPrepared()) {
+            if (inHandsIng.isPrepared()) {
                 skinNeeded = choppedOnionChef;
             } else {
                 skinNeeded = onionChef;
             }
         } else if (item instanceof Tomato) {
-            if (inHands.isPrepared()) {
+            if (inHandsIng.isPrepared()) {
                 skinNeeded = choppedTomatoChef;
             } else {
                 skinNeeded = tomatoChef;
             }
         } else if (item instanceof Bun) {
-            if (inHands.isCooked()) {
+            if (inHandsIng.isCooked()) {
                 skinNeeded = bunsToastedChef;
             } else {
                 skinNeeded = bunsChef;
             }
+        } else if (item instanceof BurgerRecipe){
+            skinNeeded = completedBurgerChef;
+        } else if (item instanceof SaladRecipe){
+            skinNeeded = saladChef;
         }
     }
 
@@ -220,12 +242,21 @@ public class Chef extends Sprite {
             return whatTouching;
         }
     }
-    public Ingredient getInHands(){
-        return inHands;
+    public Ingredient getInHandsIng(){
+        return inHandsIng;
+    }
+    public Recipe getInHandsRecipe(){
+        return inHandsRecipe;
     }
 
-    public void setInHands(Ingredient ing){
-        inHands = ing;
+    public void setInHandsIng(Ingredient ing){
+        inHandsIng = ing;
+        inHandsRecipe = null;
+    }
+
+    public void setInHandsRecipe(Recipe recipe){
+        inHandsRecipe = recipe;
+        inHandsIng = null;
     }
 
     public void setUserControlChef(boolean value){
@@ -240,14 +271,23 @@ public class Chef extends Sprite {
         if (station instanceof PlateStation){
             ((PlateStation) station).dropItem(ing);
         }
-        setInHands(null);
-
+        setInHandsRecipe(null);
     }
 
-
-
-
-
-
-
+    public void pickUpItemFrom(InteractiveTileObject station){
+        if (station instanceof PlateStation){
+            PlateStation pStation = (PlateStation) station;
+            Object item = pStation.pickUpItem();
+            if (item instanceof Ingredient){
+                setInHandsIng((Ingredient) item);
+                setChefSkin(item);
+            } else if (item instanceof Recipe){
+                setInHandsRecipe(((Recipe) item));
+                setChefSkin(item);
+            }
+        }
+    }
 }
+
+
+

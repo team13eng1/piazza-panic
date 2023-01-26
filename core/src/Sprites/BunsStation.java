@@ -17,7 +17,7 @@ public class BunsStation extends InteractiveTileObject {
 
     }
     public Ingredient getIngredient(){
-        return new Bun(2,3);
+        return new Bun(0,3);
     }
 }
 
