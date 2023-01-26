@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
- <tileset firstgid="1" source="Kitchen.tsx"/>
- <layer id="1" name="Tile Layer 1" width="10" height="8">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" source="KitchenTileSet.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="10" height="10">
   <data encoding="csv">
+19,18,18,18,18,18,18,18,18,20,
+16,21,21,21,21,21,21,21,21,17,
 1,2,2,2,1,1,1,1,1,1,
 1,10,10,10,10,10,10,10,10,1,
 1,10,10,10,10,10,10,10,10,1,
