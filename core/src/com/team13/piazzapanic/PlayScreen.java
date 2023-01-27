@@ -219,20 +219,16 @@ public class PlayScreen implements Screen {
         Texture burger_recipe = new Texture("Food/burger_recipe.png");
         Texture salad_recipe = new Texture("Food/salad_recipe.png");
         Order order1 = new Order(PlateStation.burgerRecipe, burger_recipe);
-        Order order2 = new Order(PlateStation.saladRecipe, salad_recipe);
-        Order order3 = new Order(PlateStation.burgerRecipe, burger_recipe);
-        Order order4 = new Order(PlateStation.saladRecipe, salad_recipe);
-        Order order5 = new Order(PlateStation.saladRecipe, salad_recipe);
         ordersArray.add(order1);
-        ordersArray.add(order2);
-        ordersArray.add(order3);
-        ordersArray.add(order4);
-        ordersArray.add(order5);
     }
     public void updateOrder(){
-        if(ordersArray.size()==0) return; // end game
+        if(ordersArray.size()==0) {
+            hud.updateScore(Boolean.TRUE, 30);
+            return;
+        } // end game
         if(ordersArray.get(0).orderComplete){
             ordersArray.remove(0);
+            hud.updateScore(Boolean.FALSE, 30);
             return;
         }
         ordersArray.get(0).create(trayX, trayY, game.batch);

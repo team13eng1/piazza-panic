@@ -19,6 +19,8 @@ public class HUD implements Disposable {
 
     private Integer worldTimerM;
     private Integer worldTimerS;
+    private Integer score;
+    private Integer currentTime;
     private Float fontX;
     private Float fontY;
     private BitmapFont font;
@@ -30,9 +32,13 @@ public class HUD implements Disposable {
     Label timeLabelT;
     Label timeLabel;
 
+    Label scoreLabel;
+    Label scoreLabelT;
+
     public HUD(SpriteBatch sb){
         worldTimerM = 0;
         worldTimerS = 0;
+        score = 0;
         timeStr = String.format("%d", worldTimerM) + ":" + String.format("%d", worldTimerS);
         fontX = 0.8F;
         fontY = 0.5F;
@@ -49,10 +55,15 @@ public class HUD implements Disposable {
         timeLabel = new Label(String.format("%d", worldTimerM, ":", "%i", worldTimerS), new Label.LabelStyle(font, Color.WHITE));
         timeLabelT = new Label("TIME", new Label.LabelStyle(font, Color.WHITE));
 
+        scoreLabel = new Label(String.format("%d", score), new Label.LabelStyle(font, Color.WHITE));
+        scoreLabelT = new Label("SCORE", new Label.LabelStyle(font, Color.WHITE));
+
 
         table.add(timeLabelT).padTop(2).padLeft(2);
+        table.add(scoreLabelT).padTop(2).padLeft(2);
         table.row();
         table.add(timeLabel).padTop(2).padLeft(2);
+        table.add(scoreLabel).padTop(2).padLeft(2);
 
 
         stage.addActor(table);
@@ -61,9 +72,12 @@ public class HUD implements Disposable {
     public void updateTime(Boolean scenarioComplete){
         if(scenarioComplete){
             timeLabel.setColor(Color.GREEN);
+            timeStr = String.format("%d", worldTimerM) + ":" + String.format("%d", worldTimerS);
+            timeLabel.setText(String.format("TIME: " + timeStr + " SCORE: %d", score));
             timeLabelT.setText("SCENARIO COMPLETE");
             table.center().top();
             stage.addActor(table);
+            return;
         }
         else {
             if (worldTimerS == 59) {
@@ -75,6 +89,30 @@ public class HUD implements Disposable {
         }
         timeStr = String.format("%d", worldTimerM) + ":" + String.format("%d", worldTimerS);
         timeLabel.setText(timeStr);
+        stage.addActor(table);
+
+    }
+
+    public void updateScore(Boolean scenarioComplete, Integer expectedTime){
+        if(scenarioComplete){
+            scoreLabel.setColor(Color.GREEN);
+            scoreLabel.setText("");
+            scoreLabelT.setText("");
+            scoreLabelT.remove();
+            scoreLabel.remove();
+            table.center().top();
+            stage.addActor(table);
+            return;
+        }
+        else {
+            currentTime = (worldTimerM * 60) + worldTimerS;
+            if (currentTime <= expectedTime) {
+                score += 100;
+            } else{
+                score += 100 - (5 * (currentTime-expectedTime));
+            }
+        }
+        scoreLabel.setText(String.format("%d", score));
         stage.addActor(table);
 
     }
