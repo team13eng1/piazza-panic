@@ -62,7 +62,7 @@ public class HUD implements Disposable {
         if(scenarioComplete){
             timeLabel.setColor(Color.GREEN);
             timeLabelT.setText("SCENARIO COMPLETE");
-            table.top();
+            table.center().top();
             stage.addActor(table);
         }
         else {
