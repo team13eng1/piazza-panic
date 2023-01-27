@@ -24,7 +24,7 @@ public class Orders implements Disposable {
         stage = new Stage(viewport, sb);
 
         Table table = new Table();
-        table.top().left();
+        table.top();
         table.setFillParent(true);
 
         stage.addActor(table);

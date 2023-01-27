@@ -24,10 +24,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 
+
 public class PlayScreen implements Screen {
 
     private MainGame game;
-    Texture texture;
     private OrthographicCamera gamecam;
     private Viewport gameport;
     private HUD hud;
@@ -50,13 +50,19 @@ public class PlayScreen implements Screen {
 
     public PlateStation plateStation;
 
+    public Boolean scenarioComplete;
+
     public static float trayX;
     public static float trayY;
+
+    private float timeSeconds = 0f;
+    private float period = 1f;
+
 
 
     public PlayScreen(MainGame game){
         this.game = game;
-
+        scenarioComplete = Boolean.FALSE;
         // camera used to follow chef
         gamecam = new OrthographicCamera();
         // FitViewport to maintain aspect ratio whilst scaling to screen size
@@ -187,6 +193,9 @@ public class PlayScreen implements Screen {
                                     controlledChef.dropItemOn(tile, controlledChef.getInHandsRecipe());
                                     ordersArray.get(0).orderComplete = true;
                                     controlledChef.setChefSkin(null);
+                                    if(ordersArray.size()==1){
+                                        scenarioComplete = Boolean.TRUE;
+                                    }
                                 }
                                 break;
                         }
@@ -224,6 +233,7 @@ public class PlayScreen implements Screen {
         if(ordersArray.size()==0) return; // end game
         if(ordersArray.get(0).orderComplete){
             ordersArray.remove(0);
+            return;
         }
         ordersArray.get(0).create(trayX, trayY, game.batch);
     }
@@ -231,6 +241,13 @@ public class PlayScreen implements Screen {
     @Override
     public void render(float delta){
         update(delta);
+
+        //Execute handleEvent each 1 second
+        timeSeconds +=Gdx.graphics.getRawDeltaTime();
+        if(timeSeconds > period){
+            timeSeconds-=period;
+            hud.updateTime(scenarioComplete);
+        }
 
         Gdx.gl.glClear(1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
