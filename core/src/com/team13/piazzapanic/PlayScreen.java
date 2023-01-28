@@ -211,14 +211,16 @@ public class PlayScreen implements Screen {
 
                                 break;
                             case "Sprites.CompletedDishStation":
-                                if(controlledChef.getInHandsRecipe().getClass().equals(ordersArray.get(0).recipe.getClass())){
-                                    controlledChef.completedRecipePlaced = true;
-                                    controlledChef.previousInHandRecipe = controlledChef.getInHandsRecipe();
-                                    controlledChef.dropItemOn(tile, controlledChef.getInHandsRecipe());
-                                    ordersArray.get(0).orderComplete = true;
-                                    controlledChef.setChefSkin(null);
-                                    if(ordersArray.size()==1){
-                                        scenarioComplete = Boolean.TRUE;
+                                if (controlledChef.getInHandsRecipe() != null){
+                                    if(controlledChef.getInHandsRecipe().getClass().equals(ordersArray.get(0).recipe.getClass())){
+                                        controlledChef.completedRecipePlaced = true;
+                                        controlledChef.previousInHandRecipe = controlledChef.getInHandsRecipe();
+                                        controlledChef.dropItemOn(tile, controlledChef.getInHandsRecipe());
+                                        ordersArray.get(0).orderComplete = true;
+                                        controlledChef.setChefSkin(null);
+                                        if(ordersArray.size()==1){
+                                            scenarioComplete = Boolean.TRUE;
+                                        }
                                     }
                                 }
                                 break;
@@ -261,7 +263,6 @@ public class PlayScreen implements Screen {
     @Override
     public void render(float delta){
         update(delta);
-
         //Execute handleEvent each 1 second
         timeSeconds +=Gdx.graphics.getRawDeltaTime();
         if(timeSeconds > period){
@@ -292,14 +293,14 @@ public class PlayScreen implements Screen {
             recipeNew.create(plateStation.getX(), plateStation.getY(), game.batch);
         }
         if (chef1.getUserControlChef() == false) {
-            if (chef1.getTouchingTile() != null){
+            if (chef1.getTouchingTile() != null && chef1.getInHandsIng() != null){
                 if (chef1.getTouchingTile().getUserData() instanceof InteractiveTileObject){
                     chef1.displayIng(game.batch);
                 }
             }
         }
         if (chef2.getUserControlChef() == false) {
-            if (chef2.getTouchingTile() != null) {
+            if (chef2.getTouchingTile() != null && chef1.getInHandsIng() != null) {
                 if (chef2.getTouchingTile().getUserData() instanceof InteractiveTileObject) {
                     chef2.displayIng(game.batch);
                 }

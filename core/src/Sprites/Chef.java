@@ -165,9 +165,13 @@ public class Chef extends Sprite {
             waitTimer += dt;
             b2body.setLinearVelocity(new Vector2(startVector.x * -1, startVector.y * -1));
             if (waitTimer > 0.3f) {
+                b2body.setLinearVelocity(new Vector2(0,0));
                 chefOnChefCollision = false;
                 userControlChef = true;
                 waitTimer = 0;
+                if (inHandsIng != null){
+                    setChefSkin(inHandsIng);
+                }
             }
         } else if (userControlChef == false && chefOnChefCollision == false && getInHandsIng().prepareTime > 0) {
             waitTimer += dt;
@@ -316,26 +320,29 @@ public class Chef extends Sprite {
     }
 
     public void displayIng(SpriteBatch batch) {
-        InteractiveTileObject tile = (InteractiveTileObject) whatTouching.getUserData();
-        if (tile instanceof ChoppingBoard) {
-            ChoppingBoard tileNew = (ChoppingBoard) tile;
-            inHandsIng.create(tileNew.getX() - (0.5f / MainGame.PPM), tileNew.getY() - (0.2f / MainGame.PPM), batch);
-            setChefSkin(null);
-        } else if (tile instanceof Pan) {
-            Pan tileNew = (Pan) tile;
-            inHandsIng.create(tileNew.getX(), tileNew.getY() - (0.01f / MainGame.PPM), batch);
-            setChefSkin(null);
-        } else if (tile instanceof CompletedDishStation) {
-            CompletedDishStation tileNew = (CompletedDishStation) tile;
-            waitTimer += 1/60f;
-            previousInHandRecipe.create(tileNew.getX(), tileNew.getY() - (0.01f / MainGame.PPM), batch);
-            if (waitTimer > nextOrderAppearTime) {
-                previousInHandRecipe = null;
-                waitTimer = 0;
+        if (whatTouching != null && chefOnChefCollision == false){
+            InteractiveTileObject tile = (InteractiveTileObject) whatTouching.getUserData();
+            if (tile instanceof ChoppingBoard) {
+                ChoppingBoard tileNew = (ChoppingBoard) tile;
+                inHandsIng.create(tileNew.getX() - (0.5f / MainGame.PPM), tileNew.getY() - (0.2f / MainGame.PPM), batch);
+                setChefSkin(null);
+            } else if (tile instanceof Pan) {
+                Pan tileNew = (Pan) tile;
+                inHandsIng.create(tileNew.getX(), tileNew.getY() - (0.01f / MainGame.PPM), batch);
+                setChefSkin(null);
+            } else if (tile instanceof CompletedDishStation) {
+                CompletedDishStation tileNew = (CompletedDishStation) tile;
+                waitTimer += 1/60f;
+                previousInHandRecipe.create(tileNew.getX(), tileNew.getY() - (0.01f / MainGame.PPM), batch);
+                if (waitTimer > nextOrderAppearTime) {
+                    previousInHandRecipe = null;
+                    waitTimer = 0;
 
+                }
             }
         }
-    }
+        }
+
         public void chefsColliding () {
             userControlChef = false;
             chefOnChefCollision = true;
