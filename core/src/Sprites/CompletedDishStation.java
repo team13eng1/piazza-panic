@@ -12,4 +12,11 @@ public class CompletedDishStation extends InteractiveTileObject {
         fixture.setUserData(this);
 
     }
+    public float getX(){
+        return super.bdefNew.position.x;
+    }
+
+    public float getY(){
+        return super.bdefNew.position.y;
+    }
 }

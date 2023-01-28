@@ -35,17 +35,22 @@ public class PlateStation extends InteractiveTileObject {
     public void checkRecipeCreated(){
         if (plate.size() == burgerRecipe.getIngredients().size()) {
             boolean burgerSame = true;
+            boolean burgerIngFound;
             for (int i = 0; i < plate.size(); i++) {
                 Ingredient ing = plate.get(i);
+                burgerIngFound = false;
                 for (int j = 0; j < burgerRecipe.getIngredients().size(); j++) {
-                    if (ing.getClass().toString().equals(burgerRecipe.getIngredients().get(j))) {
-                        if (ing.isPrepared()) {
-                        } else {
-                            burgerSame = false;
+                    if (ing.getClass().toString().equals(burgerRecipe.getIngredients().get(j).getClass().toString())) {
+                        if (ing.isCooked()) {
+                            burgerIngFound = true;
                         }
                     }
                 }
+                 if (burgerIngFound == false){
+                     burgerSame = false;
+                 }
             }
+            System.out.print(burgerSame);
             if (burgerSame) {
                 plate.clear();
                 recipeDone = burgerRecipe;
@@ -53,15 +58,19 @@ public class PlateStation extends InteractiveTileObject {
         }
         if (plate.size() == saladRecipe.getIngredients().size()) {
             boolean saladSame = true;
+            boolean saladIngFound;
             for (int i = 0; i < plate.size(); i++) {
                 Ingredient ing = plate.get(i);
+                saladIngFound = false;
                 for (int j = 0; j < saladRecipe.getIngredients().size(); j++) {
-                    if (ing.getClass().toString().equals(saladRecipe.getIngredients().get(j))) {
+                    if (ing.getClass().toString().equals(saladRecipe.getIngredients().get(j).getClass().toString())) {
                         if (ing.isPrepared()) {
-                        } else {
-                            saladSame = false;
+                            saladIngFound = true;
                         }
                     }
+                }
+                if (saladIngFound == false){
+                    saladSame = false;
                 }
             }
             if (saladSame) {

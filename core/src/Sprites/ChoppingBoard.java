@@ -1,5 +1,6 @@
 package Sprites;
 
+import Ingredients.Ingredient;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -11,5 +12,13 @@ public class ChoppingBoard extends InteractiveTileObject {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
 
+    }
+
+    public float getX(){
+        return super.bdefNew.position.x;
+    }
+
+    public float getY(){
+        return super.bdefNew.position.y;
     }
 }

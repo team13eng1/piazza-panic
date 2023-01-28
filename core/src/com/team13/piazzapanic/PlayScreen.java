@@ -50,6 +50,7 @@ public class PlayScreen implements Screen {
 
     public PlateStation plateStation;
 
+
     public Boolean scenarioComplete;
 
     public static float trayX;
@@ -57,8 +58,6 @@ public class PlayScreen implements Screen {
 
     private float timeSeconds = 0f;
     private float period = 1f;
-
-
 
     public PlayScreen(MainGame game){
         this.game = game;
@@ -84,9 +83,12 @@ public class PlayScreen implements Screen {
         chef2 = new Chef(this.world, 128,65);
         controlledChef = chef1;
         world.setContactListener(new WorldContactListener());
+        controlledChef.notificationSetBounds("Down");
 
         ordersArray = new ArrayList<>();
         createOrder();
+
+        b2dr = new Box2DDebugRenderer();
 
     }
 
@@ -96,7 +98,9 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt){
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+        if ((Gdx.input.isKeyJustPressed(Input.Keys.R) &&
+                chef1.getUserControlChef() == true &&
+                chef2.getUserControlChef() == true)) {
             if (controlledChef.equals(chef1)) {
                 controlledChef.b2body.setLinearVelocity(0, 0);
                 controlledChef = chef2;
@@ -105,21 +109,34 @@ public class PlayScreen implements Screen {
                 controlledChef = chef1;
             }
         }
+        if (controlledChef.getUserControlChef() == false){
+            if (chef1.getUserControlChef() == true){
+                controlledChef.b2body.setLinearVelocity(0, 0);
+                controlledChef = chef1;
+            } else if(chef2.getUserControlChef() == true) {
+                controlledChef.b2body.setLinearVelocity(0, 0);
+                controlledChef = chef2;
+            }
+        }
         if (controlledChef.getUserControlChef() == true) {
                 float xVelocity = 0;
                 float yVelocity = 0;
 
                 if (Gdx.input.isKeyPressed(Input.Keys.W)) {
                     yVelocity += 0.5f;
+                    controlledChef.notificationSetBounds("Up");
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.A)) {
                     xVelocity -= 0.5f;
+                    controlledChef.notificationSetBounds("Left");
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.S)) {
                     yVelocity -= 0.5f;
+                    controlledChef.notificationSetBounds("Down");
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.D)) {
                     xVelocity += 0.5f;
+                    controlledChef.notificationSetBounds("Right");
                 }
                 controlledChef.b2body.setLinearVelocity(xVelocity, yVelocity);
             }
@@ -173,8 +190,10 @@ public class PlayScreen implements Screen {
                                 break;
 
                             case "Sprites.ChoppingBoard":
-                               if(controlledChef.getInHandsIng().prepareTime > 0){
-                                    controlledChef.setUserControlChef(false);
+                                if(controlledChef.getInHandsIng() != null){
+                                    if(controlledChef.getInHandsIng().prepareTime > 0){
+                                        controlledChef.setUserControlChef(false);
+                                    }
                                 }
                                break;
                             case "Sprites.PlateStation":
@@ -184,12 +203,17 @@ public class PlayScreen implements Screen {
                             }
                                 break;
                             case "Sprites.Pan":
-                                if (controlledChef.getInHandsIng().isPrepared() && controlledChef.getInHandsIng().cookTime > 0){
-                                    controlledChef.setUserControlChef(false);
+                                if(controlledChef.getInHandsIng() != null) {
+                                    if (controlledChef.getInHandsIng().isPrepared() && controlledChef.getInHandsIng().cookTime > 0){
+                                        controlledChef.setUserControlChef(false);
+                                    }
                                 }
+
                                 break;
                             case "Sprites.CompletedDishStation":
                                 if(controlledChef.getInHandsRecipe().getClass().equals(ordersArray.get(0).recipe.getClass())){
+                                    controlledChef.completedRecipePlaced = true;
+                                    controlledChef.previousInHandRecipe = controlledChef.getInHandsRecipe();
                                     controlledChef.dropItemOn(tile, controlledChef.getInHandsRecipe());
                                     ordersArray.get(0).orderComplete = true;
                                     controlledChef.setChefSkin(null);
@@ -249,7 +273,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         renderer.render();
-
+        b2dr.render(world, gamecam.combined);
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
         game.batch.setProjectionMatrix(gamecam.combined);
@@ -257,6 +281,7 @@ public class PlayScreen implements Screen {
         updateOrder();
         chef1.draw(game.batch);
         chef2.draw(game.batch);
+        controlledChef.drawNotificaiton(game.batch);
         if (plateStation.getPlate().size() > 0){
             for(Object ing : plateStation.getPlate()){
                 Ingredient ingNew = (Ingredient) ing;
@@ -265,6 +290,23 @@ public class PlayScreen implements Screen {
         } else if (plateStation.getCompletedRecipe() != null){
             Recipe recipeNew = plateStation.getCompletedRecipe();
             recipeNew.create(plateStation.getX(), plateStation.getY(), game.batch);
+        }
+        if (chef1.getUserControlChef() == false) {
+            if (chef1.getTouchingTile() != null){
+                if (chef1.getTouchingTile().getUserData() instanceof InteractiveTileObject){
+                    chef1.displayIng(game.batch);
+                }
+            }
+        }
+        if (chef2.getUserControlChef() == false) {
+            if (chef2.getTouchingTile() != null) {
+                if (chef2.getTouchingTile().getUserData() instanceof InteractiveTileObject) {
+                    chef2.displayIng(game.batch);
+                }
+            }
+        }
+        if (controlledChef.previousInHandRecipe != null){
+            controlledChef.displayIng(game.batch);
         }
         game.batch.end();
     }

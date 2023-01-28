@@ -40,7 +40,7 @@ public abstract class Ingredient extends Sprite {
     public void create(float x, float y, SpriteBatch batch){
         Sprite sprite = new Sprite(tex.get(findCorrectSkin()));
         float adjustedX =  x - (5/MainGame.PPM);
-        float adjustedY =  y - (3.7f / MainGame.PPM);
+        float adjustedY =  y - (4.95f / MainGame.PPM);
         sprite.setBounds(adjustedX,adjustedY,10/ MainGame.PPM,10/ MainGame.PPM);
         sprite.draw(batch);
     }
