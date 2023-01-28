@@ -19,6 +19,8 @@ public class HUD implements Disposable {
 
     private Integer worldTimerM;
     private Integer worldTimerS;
+
+    private Integer addScore;
     private Integer score;
     private Integer currentTime;
     private Float fontX;
@@ -34,14 +36,16 @@ public class HUD implements Disposable {
 
     Label scoreLabel;
     Label scoreLabelT;
+    Label orderNumL;
+    Label orderNumLT;
 
     public HUD(SpriteBatch sb){
         worldTimerM = 0;
         worldTimerS = 0;
         score = 0;
-        timeStr = String.format("%d", worldTimerM) + ":" + String.format("%d", worldTimerS);
-        fontX = 0.8F;
-        fontY = 0.5F;
+        timeStr = String.format("%d", worldTimerM) + " : " + String.format("%d", worldTimerS);
+        fontX = 0.5F;
+        fontY = 0.3F;
 
         font = new BitmapFont();
         font.getData().setScale(fontX, fontY);
@@ -49,23 +53,27 @@ public class HUD implements Disposable {
         stage = new Stage(viewport, sb);
 
         table = new Table();
-        table.top().left();
+        table.left().top();
         table.setFillParent(true);
 
         timeLabel = new Label(String.format("%d", worldTimerM, ":", "%i", worldTimerS), new Label.LabelStyle(font, Color.WHITE));
-        timeLabelT = new Label("TIME", new Label.LabelStyle(font, Color.WHITE));
+        timeLabelT = new Label("TIME", new Label.LabelStyle(font, Color.BLACK));
+        orderNumLT = new Label("ORDER", new Label.LabelStyle(font, Color.BLACK));
+        orderNumL = new Label(String.format("%d", 0), new Label.LabelStyle(font, Color.WHITE));
 
         scoreLabel = new Label(String.format("%d", score), new Label.LabelStyle(font, Color.WHITE));
-        scoreLabelT = new Label("SCORE", new Label.LabelStyle(font, Color.WHITE));
+        scoreLabelT = new Label("SCORE", new Label.LabelStyle(font, Color.BLACK));
 
 
         table.add(timeLabelT).padTop(2).padLeft(2);
         table.add(scoreLabelT).padTop(2).padLeft(2);
+        table.add(orderNumLT).padTop(2).padLeft(2);
         table.row();
         table.add(timeLabel).padTop(2).padLeft(2);
         table.add(scoreLabel).padTop(2).padLeft(2);
+        table.add(orderNumL).padTop(2).padLeft(2);
 
-
+        table.left().top();
         stage.addActor(table);
     }
 
@@ -87,6 +95,7 @@ public class HUD implements Disposable {
                 worldTimerS += 1;
             }
         }
+        table.left().top();
         timeStr = String.format("%d", worldTimerM) + ":" + String.format("%d", worldTimerS);
         timeLabel.setText(timeStr);
         stage.addActor(table);
@@ -94,7 +103,19 @@ public class HUD implements Disposable {
     }
 
     public void updateScore(Boolean scenarioComplete, Integer expectedTime){
-        if(scenarioComplete){
+        currentTime = (worldTimerM * 60) + worldTimerS;
+        if (currentTime <= expectedTime) {
+            addScore = 100;
+        }
+        else{
+            addScore = 100 - (5 * (currentTime-expectedTime));
+            if(addScore < 0){
+                addScore = 0;
+            }
+        }
+        score += addScore;
+
+        if(scenarioComplete==Boolean.TRUE){
             scoreLabel.setColor(Color.GREEN);
             scoreLabel.setText("");
             scoreLabelT.setText("");
@@ -104,15 +125,25 @@ public class HUD implements Disposable {
             stage.addActor(table);
             return;
         }
-        else {
-            currentTime = (worldTimerM * 60) + worldTimerS;
-            if (currentTime <= expectedTime) {
-                score += 100;
-            } else{
-                score += 100 - (5 * (currentTime-expectedTime));
-            }
-        }
+
+        table.left().top();
         scoreLabel.setText(String.format("%d", score));
+        stage.addActor(table);
+
+    }
+
+    public void updateOrder(Boolean scenarioComplete, Integer orderNum){
+        if(scenarioComplete==Boolean.TRUE){
+            orderNumL.remove();
+            orderNumLT.remove();
+            table.center().top();
+            stage.addActor(table);
+            return;
+        }
+
+        table.left().top();
+        orderNumL.setText(String.format("%d", orderNum));
+        orderNumLT.setText("ORDER");
         stage.addActor(table);
 
     }

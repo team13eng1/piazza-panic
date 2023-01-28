@@ -23,6 +23,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class PlayScreen implements Screen {
@@ -52,16 +54,21 @@ public class PlayScreen implements Screen {
 
 
     public Boolean scenarioComplete;
+    public Boolean createdOrder;
 
     public static float trayX;
     public static float trayY;
 
     private float timeSeconds = 0f;
+
+    private float timeSecondsCount = 0f;
+
     private float period = 1f;
 
     public PlayScreen(MainGame game){
         this.game = game;
         scenarioComplete = Boolean.FALSE;
+        createdOrder = Boolean.FALSE;
         // camera used to follow chef
         gamecam = new OrthographicCamera();
         // FitViewport to maintain aspect ratio whilst scaling to screen size
@@ -86,7 +93,6 @@ public class PlayScreen implements Screen {
         controlledChef.notificationSetBounds("Down");
 
         ordersArray = new ArrayList<>();
-        createOrder();
 
         b2dr = new Box2DDebugRenderer();
 
@@ -213,8 +219,6 @@ public class PlayScreen implements Screen {
                             case "Sprites.CompletedDishStation":
                                 if (controlledChef.getInHandsRecipe() != null){
                                     if(controlledChef.getInHandsRecipe().getClass().equals(ordersArray.get(0).recipe.getClass())){
-                                        controlledChef.completedRecipePlaced = true;
-                                        controlledChef.previousInHandRecipe = controlledChef.getInHandsRecipe();
                                         controlledChef.dropItemOn(tile, controlledChef.getInHandsRecipe());
                                         ordersArray.get(0).orderComplete = true;
                                         controlledChef.setChefSkin(null);
@@ -242,31 +246,54 @@ public class PlayScreen implements Screen {
     }
 
     public void createOrder() {
+        int randomNum = ThreadLocalRandom.current().nextInt(1, 2 + 1);
         Texture burger_recipe = new Texture("Food/burger_recipe.png");
         Texture salad_recipe = new Texture("Food/salad_recipe.png");
-        Order order1 = new Order(PlateStation.burgerRecipe, burger_recipe);
-        ordersArray.add(order1);
+        Order order;
+
+        for(int i = 0; i<5; i++){
+            if(randomNum==1) {
+                order = new Order(PlateStation.burgerRecipe, burger_recipe);
+            }
+            else {
+                order = new Order(PlateStation.saladRecipe, salad_recipe);
+            }
+            ordersArray.add(order);
+            randomNum = ThreadLocalRandom.current().nextInt(1, 2 + 1);
+        }
+        hud.updateOrder(Boolean.FALSE, 1);
     }
     public void updateOrder(){
-        if(ordersArray.size()==0) {
-            hud.updateScore(Boolean.TRUE, 30);
+        if(scenarioComplete==Boolean.TRUE) {
+            hud.updateScore(Boolean.TRUE, (6 - ordersArray.size()) * 35);
+            hud.updateOrder(Boolean.TRUE, 0);
             return;
         } // end game
-        if(ordersArray.get(0).orderComplete){
-            ordersArray.remove(0);
-            hud.updateScore(Boolean.FALSE, 30);
-            return;
+        if(ordersArray.size() != 0) {
+            if (ordersArray.get(0).orderComplete) {
+                hud.updateScore(Boolean.FALSE, (6 - ordersArray.size()) * 35);
+                ordersArray.remove(0);
+                hud.updateOrder(Boolean.FALSE, 6 - ordersArray.size());
+                return;
+            }
+            ordersArray.get(0).create(trayX, trayY, game.batch);
         }
-        ordersArray.get(0).create(trayX, trayY, game.batch);
     }
 
     @Override
     public void render(float delta){
         update(delta);
+
         //Execute handleEvent each 1 second
         timeSeconds +=Gdx.graphics.getRawDeltaTime();
-        if(timeSeconds > period){
-            timeSeconds-=period;
+        timeSecondsCount += Gdx.graphics.getDeltaTime();
+
+        if(Math.round(timeSecondsCount) == 5 && createdOrder == Boolean.FALSE){
+            createdOrder = Boolean.TRUE;
+            createOrder();
+        }
+        if(timeSeconds > period) {
+            timeSeconds -= period;
             hud.updateTime(scenarioComplete);
         }
 
@@ -295,19 +322,20 @@ public class PlayScreen implements Screen {
         if (chef1.getUserControlChef() == false) {
             if (chef1.getTouchingTile() != null && chef1.getInHandsIng() != null){
                 if (chef1.getTouchingTile().getUserData() instanceof InteractiveTileObject){
-                    chef1.displayIng(game.batch);
+                    System.out.print("£HEHEEHEEFHGJFjdh");
+                    chef1.displayIngStatic(game.batch);
                 }
             }
         }
         if (chef2.getUserControlChef() == false) {
-            if (chef2.getTouchingTile() != null && chef1.getInHandsIng() != null) {
+            if (chef2.getTouchingTile() != null && chef2.getInHandsIng() != null) {
                 if (chef2.getTouchingTile().getUserData() instanceof InteractiveTileObject) {
-                    chef2.displayIng(game.batch);
+                    chef2.displayIngStatic(game.batch);
                 }
             }
         }
         if (controlledChef.previousInHandRecipe != null){
-            controlledChef.displayIng(game.batch);
+            controlledChef.displayIngDynamic(game.batch);
         }
         game.batch.end();
     }
