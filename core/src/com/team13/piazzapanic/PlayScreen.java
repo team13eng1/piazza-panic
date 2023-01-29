@@ -41,8 +41,6 @@ public class PlayScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer;
 
     private World world;
-    private Box2DDebugRenderer b2dr;
-
     private Chef chef1;
     private Chef chef2;
 
@@ -93,8 +91,6 @@ public class PlayScreen implements Screen {
         controlledChef.notificationSetBounds("Down");
 
         ordersArray = new ArrayList<>();
-
-        b2dr = new Box2DDebugRenderer();
 
     }
 
@@ -311,7 +307,6 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         renderer.render();
-        b2dr.render(world, gamecam.combined);
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
         game.batch.setProjectionMatrix(gamecam.combined);
@@ -375,7 +370,6 @@ public class PlayScreen implements Screen {
         map.dispose();
         renderer.dispose();
         world.dispose();
-        b2dr.dispose();
         hud.dispose();
     }
 }
