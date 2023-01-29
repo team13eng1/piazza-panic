@@ -1,10 +1,7 @@
 package Tools;
 
-import Sprites.Bin;
 import Sprites.Chef;
 import Sprites.InteractiveTileObject;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class WorldContactListener implements ContactListener {
@@ -46,8 +43,6 @@ public class WorldContactListener implements ContactListener {
             if(objectFixt.getUserData() != null && objectFixt.getUserData() instanceof InteractiveTileObject){ // if chef interacts with tile
                 System.out.printf(objectFixt.getUserData().getClass().getName());
                 ((Chef) chefFixt.getUserData()).setTouchingTile(null);
-                System.out.printf("end contact");
-
             }
         }
     }

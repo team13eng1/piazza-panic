@@ -1,23 +1,17 @@
 package Sprites;
 
-import Ingredients.Ingredient;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.team13.piazzapanic.MainGame;
 
 
 public abstract class InteractiveTileObject {
-    private World world;
-    private TiledMap map;
 
     protected Fixture fixture;
 
     protected BodyDef bdefNew;
     public InteractiveTileObject(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
-        this.world = world;
-        this.map = map;
 
         bdefNew = bdef;
 

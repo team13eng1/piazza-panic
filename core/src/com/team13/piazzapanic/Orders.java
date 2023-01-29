@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 public class Orders implements Disposable {
     public Stage stage;
-    private Viewport viewport;
 
     private Order[] orders[];
 
@@ -20,7 +19,7 @@ public class Orders implements Disposable {
     Label timeLabel;
 
     public Orders(SpriteBatch sb){
-        viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, new OrthographicCamera());
+        Viewport viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
         Table table = new Table();

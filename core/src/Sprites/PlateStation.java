@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlateStation extends InteractiveTileObject {
-    private List<Ingredient> plate;
+    private final List<Ingredient> plate;
     public static Recipe burgerRecipe;
     public static Recipe saladRecipe;
 
@@ -22,8 +22,8 @@ public class PlateStation extends InteractiveTileObject {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
         this.plate = new ArrayList<>();
-        this.burgerRecipe = new BurgerRecipe();
-        this.saladRecipe = new SaladRecipe();
+        burgerRecipe = new BurgerRecipe();
+        saladRecipe = new SaladRecipe();
         this.recipeDone = null;
     }
 
@@ -36,8 +36,7 @@ public class PlateStation extends InteractiveTileObject {
         if (plate.size() == burgerRecipe.getIngredients().size()) {
             boolean burgerSame = true;
             boolean burgerIngFound;
-            for (int i = 0; i < plate.size(); i++) {
-                Ingredient ing = plate.get(i);
+            for (Ingredient ing : plate) {
                 burgerIngFound = false;
                 for (int j = 0; j < burgerRecipe.getIngredients().size(); j++) {
                     if (ing.getClass().toString().equals(burgerRecipe.getIngredients().get(j).getClass().toString())) {
@@ -46,11 +45,10 @@ public class PlateStation extends InteractiveTileObject {
                         }
                     }
                 }
-                 if (burgerIngFound == false){
-                     burgerSame = false;
-                 }
+                if (!burgerIngFound) {
+                    burgerSame = false;
+                }
             }
-            System.out.print(burgerSame);
             if (burgerSame) {
                 plate.clear();
                 recipeDone = burgerRecipe;
@@ -59,8 +57,7 @@ public class PlateStation extends InteractiveTileObject {
         if (plate.size() == saladRecipe.getIngredients().size()) {
             boolean saladSame = true;
             boolean saladIngFound;
-            for (int i = 0; i < plate.size(); i++) {
-                Ingredient ing = plate.get(i);
+            for (Ingredient ing : plate) {
                 saladIngFound = false;
                 for (int j = 0; j < saladRecipe.getIngredients().size(); j++) {
                     if (ing.getClass().toString().equals(saladRecipe.getIngredients().get(j).getClass().toString())) {
@@ -69,7 +66,7 @@ public class PlateStation extends InteractiveTileObject {
                         }
                     }
                 }
-                if (saladIngFound == false){
+                if (!saladIngFound) {
                     saladSame = false;
                 }
             }

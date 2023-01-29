@@ -4,17 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.*;
 
 public class StartScreen implements Screen {
-    private MainGame game;
-    private Texture backgroundImage;
-    private Sprite backgroundSprite;
-    private OrthographicCamera camera;
-    private Viewport viewport;
+    private final MainGame game;
+    private final Texture backgroundImage;
+    private final Sprite backgroundSprite;
+    private final OrthographicCamera camera;
+    private final Viewport viewport;
 
     public StartScreen(MainGame game) {
         this.game = game;
