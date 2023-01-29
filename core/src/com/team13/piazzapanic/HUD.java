@@ -1,6 +1,5 @@
 package com.team13.piazzapanic;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,17 +14,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 public class HUD implements Disposable {
     public Stage stage;
-    private Viewport viewport;
 
     private Integer worldTimerM;
     private Integer worldTimerS;
 
-    private Integer addScore;
     private Integer score;
-    private Integer currentTime;
-    private Float fontX;
-    private Float fontY;
-    private BitmapFont font;
 
     public String timeStr;
 
@@ -44,12 +37,12 @@ public class HUD implements Disposable {
         worldTimerS = 0;
         score = 0;
         timeStr = String.format("%d", worldTimerM) + " : " + String.format("%d", worldTimerS);
-        fontX = 0.5F;
-        fontY = 0.3F;
+        float fontX = 0.5F;
+        float fontY = 0.3F;
 
-        font = new BitmapFont();
+        BitmapFont font = new BitmapFont();
         font.getData().setScale(fontX, fontY);
-        viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, new OrthographicCamera());
+        Viewport viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
         table = new Table();
@@ -103,19 +96,20 @@ public class HUD implements Disposable {
     }
 
     public void updateScore(Boolean scenarioComplete, Integer expectedTime){
-        currentTime = (worldTimerM * 60) + worldTimerS;
-        if (currentTime <= expectedTime) {
-            addScore = 100;
-        }
-        else{
-            addScore = 100 - (5 * (currentTime-expectedTime));
-            if(addScore < 0){
-                addScore = 0;
-            }
-        }
-        score += addScore;
-
+        int addScore;
+        int currentTime;
         if(scenarioComplete==Boolean.TRUE){
+            currentTime = (worldTimerM * 60) + worldTimerS;
+            if (currentTime <= expectedTime) {
+                addScore = 100;
+            }
+            else{
+                addScore = 100 - (5 * (currentTime -expectedTime));
+                if(addScore < 0){
+                    addScore = 0;
+                }
+            }
+            score += addScore;
             scoreLabel.setColor(Color.GREEN);
             scoreLabel.setText("");
             scoreLabelT.setText("");
@@ -125,6 +119,17 @@ public class HUD implements Disposable {
             stage.addActor(table);
             return;
         }
+        currentTime = (worldTimerM * 60) + worldTimerS;
+        if (currentTime <= expectedTime) {
+            addScore = 100;
+        }
+        else{
+            addScore = 100 - (5 * (currentTime -expectedTime));
+            if(addScore < 0){
+                addScore = 0;
+            }
+        }
+        score += addScore;
 
         table.left().top();
         scoreLabel.setText(String.format("%d", score));

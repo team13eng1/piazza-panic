@@ -5,44 +5,40 @@ import Recipe.BurgerRecipe;
 import Recipe.Recipe;
 import Recipe.SaladRecipe;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.team13.piazzapanic.MainGame;
+
+import java.util.Objects;
+
 public class Chef extends Sprite {
     public World world;
     public Body b2body;
 
-    private float initialX;
-    private float initialY;
+    private final float initialX;
+    private final float initialY;
 
 
     public Vector2 startVector;
     private float waitTimer;
     public boolean chefOnChefCollision;
-    private float chefWidth;
-    private float chefHeight;
-    private Texture normalChef;
-    private Texture bunsChef;
-    private Texture bunsToastedChef;
-    private Texture burgerChef;
-    private Texture lettuceChef;
-    private Texture onionChef;
-    private Texture tomatoChef;
-    private Texture choppedLettuceChef;
-    private Texture choppedOnionChef;
-    private Texture choppedTomatoChef;
-    private Texture pattyChef;
-    private Texture completedBurgerChef;
-    private Texture meatChef;
-    private Texture saladRecipe;
-    private Texture burgerRecipe;
+    private final Texture normalChef;
+    private final Texture bunsChef;
+    private final Texture bunsToastedChef;
+    private final Texture burgerChef;
+    private final Texture lettuceChef;
+    private final Texture onionChef;
+    private final Texture tomatoChef;
+    private final Texture choppedLettuceChef;
+    private final Texture choppedOnionChef;
+    private final Texture choppedTomatoChef;
+    private final Texture pattyChef;
+    private final Texture completedBurgerChef;
+    private final Texture meatChef;
     private Texture saladChef;
 
     public enum State {UP, DOWN, LEFT, RIGHT}
@@ -59,16 +55,13 @@ public class Chef extends Sprite {
 
     private Boolean userControlChef;
 
-    public boolean notification;
-
-    private Sprite circleSprite;
+    private final Sprite circleSprite;
 
     private float notificationX;
     private float notificationY;
     private float notificationWidth;
     private float notificationHeight;
 
-    public boolean completedRecipePlaced;
     private CompletedDishStation completedStation;
 
     public int nextOrderAppearTime;
@@ -93,8 +86,6 @@ public class Chef extends Sprite {
         meatChef = new Texture("Chef/Chef_holding_meat.png");
         saladChef = new Texture("Chef/Chef_holding_salad.png");
         saladChef = new Texture("Chef/Chef_holding_salad.png");
-        burgerRecipe = new Texture("Food/burger_recipe.png");
-        saladRecipe = new Texture("Food/salad_recipe.png");
 
 
         skinNeeded = normalChef;
@@ -104,8 +95,8 @@ public class Chef extends Sprite {
 
         defineChef();
 
-        chefWidth = 13 / MainGame.PPM;
-        chefHeight = 20 / MainGame.PPM;
+        float chefWidth = 13 / MainGame.PPM;
+        float chefHeight = 20 / MainGame.PPM;
         setBounds(0, 0, chefWidth, chefHeight);
         chefOnChefCollision = false;
         waitTimer = 0;
@@ -164,7 +155,7 @@ public class Chef extends Sprite {
         }
 
 
-        if (userControlChef == false && chefOnChefCollision == true) {
+        if (!userControlChef && chefOnChefCollision) {
             waitTimer += dt;
             b2body.setLinearVelocity(new Vector2(startVector.x * -1, startVector.y * -1));
             if (waitTimer > 0.3f) {
@@ -176,20 +167,20 @@ public class Chef extends Sprite {
                     setChefSkin(inHandsIng);
                 }
             }
-        } else if (userControlChef == false && chefOnChefCollision == false && getInHandsIng().prepareTime > 0) {
+        } else if (!userControlChef && getInHandsIng().prepareTime > 0) {
             waitTimer += dt;
             if (waitTimer > inHandsIng.prepareTime) {
                 inHandsIng.prepareTime = 0;
-                inHandsIng.setPrepared(true);
+                inHandsIng.setPrepared();
                 userControlChef = true;
                 waitTimer = 0;
                 setChefSkin(inHandsIng);
             }
-        } else if (userControlChef == false && chefOnChefCollision == false && getInHandsIng().isPrepared() && inHandsIng.cookTime > 0) {
+        } else if (!userControlChef && !chefOnChefCollision && getInHandsIng().isPrepared() && inHandsIng.cookTime > 0) {
             waitTimer += dt;
             if (waitTimer > inHandsIng.cookTime) {
                 inHandsIng.cookTime = 0;
-                inHandsIng.setCooked(true);
+                inHandsIng.setCooked();
                 userControlChef = true;
                 waitTimer = 0;
                 setChefSkin(inHandsIng);
@@ -215,8 +206,8 @@ public class Chef extends Sprite {
         }
     }
 
-    public void drawNotificaiton(SpriteBatch batch) {
-        if (this.getUserControlChef() == true) {
+    public void drawNotification(SpriteBatch batch) {
+        if (this.getUserControlChef()) {
             circleSprite.setBounds(notificationX, notificationY, notificationWidth, notificationHeight);
             circleSprite.draw(batch);
         }
@@ -283,12 +274,6 @@ public class Chef extends Sprite {
             } else {
                 skinNeeded = lettuceChef;
             }
-        } else if (item instanceof Tomato) {
-            if (inHandsIng.isPrepared()) {
-                skinNeeded = choppedTomatoChef;
-            } else {
-                skinNeeded = tomatoChef;
-            }
         } else if (item instanceof Steak) {
             if (inHandsIng.isPrepared() && inHandsIng.isCooked()) {
                 skinNeeded = burgerChef;
@@ -324,7 +309,7 @@ public class Chef extends Sprite {
 
     public void displayIngStatic(SpriteBatch batch) {
         Gdx.app.log("", inHandsIng.toString());
-        if (whatTouching != null && chefOnChefCollision == false) {
+        if (whatTouching != null && !chefOnChefCollision) {
             InteractiveTileObject tile = (InteractiveTileObject) whatTouching.getUserData();
             if (tile instanceof ChoppingBoard) {
                 ChoppingBoard tileNew = (ChoppingBoard) tile;
@@ -389,11 +374,7 @@ public class Chef extends Sprite {
 
         }
         public boolean getUserControlChef () {
-            if (userControlChef == null) {
-                return false;
-            } else {
-                return userControlChef;
-            }
+            return Objects.requireNonNullElse(userControlChef, false);
         }
 
         public void dropItemOn (InteractiveTileObject station, Ingredient ing){
@@ -403,7 +384,7 @@ public class Chef extends Sprite {
             setInHandsRecipe(null);
         }
 
-        public void dropItemOn (InteractiveTileObject station, Recipe recipe){
+        public void dropItemOn (InteractiveTileObject station){
             if (station instanceof CompletedDishStation) {
                 previousInHandRecipe = getInHandsRecipe();
                 completedStation = (CompletedDishStation) station;

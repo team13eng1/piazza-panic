@@ -6,7 +6,12 @@ import java.util.ArrayList;
 
 public class Onion extends Ingredient{
 
-    public Texture img;
+    /**
+     * The Onion class represents a specific type of ingredient in the game, specifically onions.
+     * It extends the {@link Ingredient} class and has a preparation time and cooking time.
+     * The Onion class sets up an ArrayList of textures for its different skins.
+     */
+
     public Onion(float prepareTime, float cookTime) {
         super(prepareTime, cookTime);
         super.tex = new ArrayList<>();

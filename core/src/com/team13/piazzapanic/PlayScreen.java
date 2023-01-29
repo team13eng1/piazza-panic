@@ -23,26 +23,22 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 
 public class PlayScreen implements Screen {
 
-    private MainGame game;
-    private OrthographicCamera gamecam;
-    private Viewport gameport;
-    private HUD hud;
+    private final MainGame game;
+    private final OrthographicCamera gamecam;
+    private final Viewport gameport;
+    private final HUD hud;
 
-    private Orders orders;
+    private final TiledMap map;
+    private final OrthogonalTiledMapRenderer renderer;
 
-    private TmxMapLoader mapLoader;
-    private TiledMap map;
-    private OrthogonalTiledMapRenderer renderer;
-
-    private World world;
-    private Chef chef1;
-    private Chef chef2;
+    private final World world;
+    private final Chef chef1;
+    private final Chef chef2;
 
     private Chef controlledChef;
 
@@ -61,8 +57,6 @@ public class PlayScreen implements Screen {
 
     private float timeSecondsCount = 0f;
 
-    private float period = 1f;
-
     public PlayScreen(MainGame game){
         this.game = game;
         scenarioComplete = Boolean.FALSE;
@@ -74,9 +68,9 @@ public class PlayScreen implements Screen {
         // create HUD for score & time
         hud = new HUD(game.batch);
         // create orders hud
-        orders = new Orders(game.batch);
+        Orders orders = new Orders(game.batch);
         // create map
-        mapLoader = new TmxMapLoader(new InternalFileHandleResolver());
+        TmxMapLoader mapLoader = new TmxMapLoader(new InternalFileHandleResolver());
         map = mapLoader.load("Kitchen.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MainGame.PPM);
         gamecam.position.set(gameport.getWorldWidth() / 2, gameport.getWorldHeight() / 2, 0);
@@ -101,8 +95,8 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt){
         if ((Gdx.input.isKeyJustPressed(Input.Keys.R) &&
-                chef1.getUserControlChef() == true &&
-                chef2.getUserControlChef() == true)) {
+                chef1.getUserControlChef() &&
+                chef2.getUserControlChef())) {
             if (controlledChef.equals(chef1)) {
                 controlledChef.b2body.setLinearVelocity(0, 0);
                 controlledChef = chef2;
@@ -111,16 +105,16 @@ public class PlayScreen implements Screen {
                 controlledChef = chef1;
             }
         }
-        if (controlledChef.getUserControlChef() == false){
-            if (chef1.getUserControlChef() == true){
+        if (!controlledChef.getUserControlChef()){
+            if (chef1.getUserControlChef()){
                 controlledChef.b2body.setLinearVelocity(0, 0);
                 controlledChef = chef1;
-            } else if(chef2.getUserControlChef() == true) {
+            } else if(chef2.getUserControlChef()) {
                 controlledChef.b2body.setLinearVelocity(0, 0);
                 controlledChef = chef2;
             }
         }
-        if (controlledChef.getUserControlChef() == true) {
+        if (controlledChef.getUserControlChef()) {
                 float xVelocity = 0;
                 float yVelocity = 0;
 
@@ -225,7 +219,7 @@ public class PlayScreen implements Screen {
                             case "Sprites.CompletedDishStation":
                                 if (controlledChef.getInHandsRecipe() != null){
                                     if(controlledChef.getInHandsRecipe().getClass().equals(ordersArray.get(0).recipe.getClass())){
-                                        controlledChef.dropItemOn(tile, controlledChef.getInHandsRecipe());
+                                        controlledChef.dropItemOn(tile);
                                         ordersArray.get(0).orderComplete = true;
                                         controlledChef.setChefSkin(null);
                                         if(ordersArray.size()==1){
@@ -298,6 +292,7 @@ public class PlayScreen implements Screen {
             createdOrder = Boolean.TRUE;
             createOrder();
         }
+        float period = 1f;
         if(timeSeconds > period) {
             timeSeconds -= period;
             hud.updateTime(scenarioComplete);
@@ -314,7 +309,7 @@ public class PlayScreen implements Screen {
         updateOrder();
         chef1.draw(game.batch);
         chef2.draw(game.batch);
-        controlledChef.drawNotificaiton(game.batch);
+        controlledChef.drawNotification(game.batch);
         if (plateStation.getPlate().size() > 0){
             for(Object ing : plateStation.getPlate()){
                 Ingredient ingNew = (Ingredient) ing;
@@ -324,23 +319,25 @@ public class PlayScreen implements Screen {
             Recipe recipeNew = plateStation.getCompletedRecipe();
             recipeNew.create(plateStation.getX(), plateStation.getY(), game.batch);
         }
-        if (chef1.getUserControlChef() == false) {
+        if (!chef1.getUserControlChef()) {
             if (chef1.getTouchingTile() != null && chef1.getInHandsIng() != null){
                 if (chef1.getTouchingTile().getUserData() instanceof InteractiveTileObject){
-                    System.out.print("£HEHEEHEEFHGJFjdh");
                     chef1.displayIngStatic(game.batch);
                 }
             }
         }
-        if (chef2.getUserControlChef() == false) {
+        if (!chef2.getUserControlChef()) {
             if (chef2.getTouchingTile() != null && chef2.getInHandsIng() != null) {
                 if (chef2.getTouchingTile().getUserData() instanceof InteractiveTileObject) {
                     chef2.displayIngStatic(game.batch);
                 }
             }
         }
-        if (controlledChef.previousInHandRecipe != null){
-            controlledChef.displayIngDynamic(game.batch);
+        if (chef1.previousInHandRecipe != null){
+            chef1.displayIngDynamic(game.batch);
+        }
+        if (chef2.previousInHandRecipe != null){
+            chef2.displayIngDynamic(game.batch);
         }
         game.batch.end();
     }
