@@ -266,7 +266,7 @@ public class Chef extends Sprite {
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(5 / MainGame.PPM);
+        shape.setRadius(4.5f / MainGame.PPM);
         shape.setPosition(new Vector2(shape.getPosition().x + (0.5f / MainGame.PPM), shape.getPosition().y - (5.5f / MainGame.PPM)));
 
 

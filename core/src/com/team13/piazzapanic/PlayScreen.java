@@ -130,26 +130,36 @@ public class PlayScreen implements Screen {
 
                 if (Gdx.input.isKeyPressed(Input.Keys.W)) {
                     yVelocity += 0.5f;
-                    controlledChef.notificationSetBounds("Up");
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.A)) {
                     xVelocity -= 0.5f;
-                    controlledChef.notificationSetBounds("Left");
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.S)) {
                     yVelocity -= 0.5f;
-                    controlledChef.notificationSetBounds("Down");
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.D)) {
                     xVelocity += 0.5f;
-                    controlledChef.notificationSetBounds("Right");
                 }
                 controlledChef.b2body.setLinearVelocity(xVelocity, yVelocity);
             }
             else {
                 controlledChef.b2body.setLinearVelocity(0, 0);
+            }
+        if (controlledChef.b2body.getLinearVelocity().x > 0){
+            controlledChef.notificationSetBounds("Right");
         }
-            if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+        if (controlledChef.b2body.getLinearVelocity().x < 0){
+            controlledChef.notificationSetBounds("Left");
+        }
+        if (controlledChef.b2body.getLinearVelocity().y > 0){
+            controlledChef.notificationSetBounds("Up");
+        }
+        if (controlledChef.b2body.getLinearVelocity().y < 0){
+            controlledChef.notificationSetBounds("Down");
+        }
+
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
                 if(controlledChef.getTouchingTile() != null){
                     InteractiveTileObject tile = (InteractiveTileObject) controlledChef.getTouchingTile().getUserData();
                     String tileName = tile.getClass().getName();
