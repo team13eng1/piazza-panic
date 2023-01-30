@@ -7,6 +7,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
+/**
+ * SteakStation is a concrete class that extends the {@link InteractiveTileObject} class.
+ * Represents a SteakStation in the game where the chef can pick up a steak
+ */
 public class SteakStation extends InteractiveTileObject {
 
     public SteakStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {

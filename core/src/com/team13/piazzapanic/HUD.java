@@ -57,7 +57,7 @@ public class HUD implements Disposable {
         orderNumL = new Label(String.format("%d", 0), new Label.LabelStyle(font, Color.WHITE));
 
         scoreLabel = new Label(String.format("%d", score), new Label.LabelStyle(font, Color.WHITE));
-        scoreLabelT = new Label("SCORE", new Label.LabelStyle(font, Color.BLACK));
+        scoreLabelT = new Label("MONEY", new Label.LabelStyle(font, Color.BLACK));
 
 
         table.add(timeLabelT).padTop(2).padLeft(2);
@@ -72,11 +72,16 @@ public class HUD implements Disposable {
         stage.addActor(table);
     }
 
+    /**
+     * Updates the time label.
+     *
+     * @param scenarioComplete Whether the game scenario has been completed.
+     */
     public void updateTime(Boolean scenarioComplete){
         if(scenarioComplete){
             timeLabel.setColor(Color.GREEN);
             timeStr = String.format("%d", worldTimerM) + ":" + String.format("%d", worldTimerS);
-            timeLabel.setText(String.format("TIME: " + timeStr + " SCORE: %d", score));
+            timeLabel.setText(String.format("TIME: " + timeStr + " MONEY: %d", score));
             timeLabelT.setText("SCENARIO COMPLETE");
             table.center().top();
             stage.addActor(table);
@@ -97,6 +102,12 @@ public class HUD implements Disposable {
 
     }
 
+    /**
+     * Calculates the user's score per order and updates the label.
+     *
+     * @param scenarioComplete Whether the game scenario has been completed.
+     * @param expectedTime The expected time an order should be completed in.
+     */
     public void updateScore(Boolean scenarioComplete, Integer expectedTime){
         int addScore;
         int currentTime;
@@ -134,6 +145,12 @@ public class HUD implements Disposable {
 
     }
 
+    /**
+     * Updates the order label.
+     *
+     * @param scenarioComplete Whether the game scenario has been completed.
+     * @param orderNum The index number of the order.
+     */
     public void updateOrder(Boolean scenarioComplete, Integer orderNum){
         if(scenarioComplete==Boolean.TRUE){
             orderNumL.remove();

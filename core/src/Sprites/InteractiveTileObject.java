@@ -11,6 +11,15 @@ public abstract class InteractiveTileObject {
     protected Fixture fixture;
 
     protected BodyDef bdefNew;
+
+    /**
+     * Constructor for the class, initialises b2bodies.
+     *
+     * @param world The playable world.
+     * @param map The tiled map.
+     * @param bdef The body definition of a tile.
+     * @param rectangle Rectangle shape.
+     */
     public InteractiveTileObject(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
 
         bdefNew = bdef;

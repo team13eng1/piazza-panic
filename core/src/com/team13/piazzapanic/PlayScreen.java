@@ -25,6 +25,23 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * The PlayScreen class is responsible for displaying the game to the user and handling the user's interactions.
+ * The PlayScreen class implements the Screen interface which is part of the LibGDX framework.
+ *
+ * The PlayScreen class contains several important fields, including the game instance, stage instance, viewport instance,
+ * and several other helper classes and variables. The game instance is used to access the global game configuration and
+ * to switch between screens. The stage instance is used to display the graphics and handle user interactions, while the
+ * viewport instance is used to manage the scaling and resizing of the game window.
+ *
+ * The PlayScreen class also contains several methods for initializing and updating the game state, including the
+ * constructor, show(), render(), update(), and dispose() methods. The constructor sets up the stage, viewport, and
+ * other helper classes and variables. The show() method is called when the PlayScreen becomes the active screen. The
+ * render() method is called repeatedly to render the game graphics and update the game state. The update() method is
+ * called to update the game state and handle user inputs. The dispose() method is called when the PlayScreen is no longer
+ * needed and is used to clean up resources and prevent memory leaks.
+ */
+
 
 public class PlayScreen implements Screen {
 
@@ -57,11 +74,18 @@ public class PlayScreen implements Screen {
 
     private float timeSecondsCount = 0f;
 
+    /**
+     * PlayScreen constructor initializes the game instance, sets initial conditions for scenarioComplete and createdOrder,
+     * creates and initializes game camera and viewport,
+     * creates and initializes HUD and orders hud, loads and initializes the map,
+     * creates and initializes world, creates and initializes chefs and sets them, sets contact listener for world, and initializes ordersArray.
+     * @param game The MainGame instance that the PlayScreen will be a part of.
+     */
+
     public PlayScreen(MainGame game){
         this.game = game;
         scenarioComplete = Boolean.FALSE;
         createdOrder = Boolean.FALSE;
-        // camera used to follow chef
         gamecam = new OrthographicCamera();
         // FitViewport to maintain aspect ratio whilst scaling to screen size
         gameport = new FitViewport(MainGame.V_WIDTH / MainGame.PPM, MainGame.V_HEIGHT / MainGame.PPM, gamecam);
@@ -92,6 +116,27 @@ public class PlayScreen implements Screen {
     public void show(){
 
     }
+
+
+    /**
+     * The handleInput method is responsible for handling the input events of the game such as movement and interaction with objects.
+     *
+     * It checks if the 'R' key is just pressed and both chefs have the user control, if so,
+     * it switches the control between the two chefs.
+     *
+     * If the controlled chef does not have the user control,
+     * the method checks if chef1 or chef2 have the user control and sets the control to that chef.
+     *
+     * If the controlled chef has the user control,
+     * it checks if the 'W', 'A', 'S', or 'D' keys are pressed and sets the velocity of the chef accordingly.
+     *
+     * If the 'E' key is just pressed and the chef is touching a tile,
+     * it checks the type of tile and sets the chef's in-hands ingredient accordingly.
+     *
+     * The method also sets the direction of the chef based on its linear velocity.
+     *
+     * @param dt is the time delta between the current and previous frame.
+     */
 
     public void handleInput(float dt){
         if ((Gdx.input.isKeyJustPressed(Input.Keys.R) &&
@@ -234,6 +279,12 @@ public class PlayScreen implements Screen {
                 }
             }
         }
+
+    /**
+     * The update method updates the game elements, such as camera and characters,
+     * based on a specified time interval "dt".
+     * @param dt time interval for the update
+    */
     public void update(float dt){
         handleInput(dt);
 
@@ -245,6 +296,9 @@ public class PlayScreen implements Screen {
 
     }
 
+    /**
+     * Creates the orders randomly and adds to an array, updates the HUD.
+     */
     public void createOrder() {
         int randomNum = ThreadLocalRandom.current().nextInt(1, 2 + 1);
         Texture burger_recipe = new Texture("Food/burger_recipe.png");
@@ -263,6 +317,10 @@ public class PlayScreen implements Screen {
         }
         hud.updateOrder(Boolean.FALSE, 1);
     }
+
+    /**
+     * Updates the orders as they are completed, or if the game scenario has been completed.
+     */
     public void updateOrder(){
         if(scenarioComplete==Boolean.TRUE) {
             hud.updateScore(Boolean.TRUE, (6 - ordersArray.size()) * 35);
@@ -280,6 +338,16 @@ public class PlayScreen implements Screen {
         }
     }
 
+    /**
+
+     The render method updates the screen by calling the update method with the given delta time, and rendering the graphics of the game.
+
+     It updates the HUD time, clears the screen, and renders the renderer and the hud.
+
+     Additionally, it checks the state of the game and draws the ingredients, completed recipes, and notifications on the screen.
+
+     @param delta The time in seconds since the last frame.
+     */
     @Override
     public void render(float delta){
         update(delta);

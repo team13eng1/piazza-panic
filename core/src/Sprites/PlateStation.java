@@ -18,6 +18,7 @@ public class PlateStation extends InteractiveTileObject {
     private Recipe recipeDone;
 
 
+
     public PlateStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);

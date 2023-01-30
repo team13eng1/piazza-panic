@@ -18,6 +18,11 @@ public class Orders implements Disposable {
     Label timeLabelT;
     Label timeLabel;
 
+    /**
+     * Constructor for the class, initialises an area for the orders to be placed.
+     *
+     * @param sb The spritebatch to be able to draw to the screen.
+     */
     public Orders(SpriteBatch sb){
         Viewport viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
