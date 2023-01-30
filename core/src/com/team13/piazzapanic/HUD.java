@@ -80,7 +80,12 @@ public class HUD implements Disposable {
     public void updateTime(Boolean scenarioComplete){
         if(scenarioComplete){
             timeLabel.setColor(Color.GREEN);
-            timeStr = String.format("%d", worldTimerM) + ":" + String.format("%d", worldTimerS);
+            if(worldTimerS < 10){
+                timeStr = String.format("%d", worldTimerM) + ":0" + String.format("%d", worldTimerS);
+            }
+            else {
+                timeStr = String.format("%d", worldTimerM) + ":" + String.format("%d", worldTimerS);
+            }
             timeLabel.setText(String.format("TIME: " + timeStr + " MONEY: %d", score));
             timeLabelT.setText("SCENARIO COMPLETE");
             table.center().top();
