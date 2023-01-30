@@ -12,10 +12,6 @@ import java.util.ArrayList;
  * The Recipe class is a subclass of Sprite that represents a completed dish in the kitchen game.
  * It holds an ArrayList of {@link Ingredients.Ingredient}s and a Texture of the completed dish image.
  *
- * @author Team13
- * @see com.badlogic.gdx.graphics.g2d.Sprite
- * @see Ingredients.Ingredient
- * @see Texture
  */
 public class Recipe extends Sprite {
     protected ArrayList<Ingredient> ingredients;

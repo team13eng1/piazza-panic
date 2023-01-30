@@ -268,7 +268,7 @@ public class PlayScreen implements Screen {
             hud.updateScore(Boolean.TRUE, (6 - ordersArray.size()) * 35);
             hud.updateOrder(Boolean.TRUE, 0);
             return;
-        } // end game
+        }
         if(ordersArray.size() != 0) {
             if (ordersArray.get(0).orderComplete) {
                 hud.updateScore(Boolean.FALSE, (6 - ordersArray.size()) * 35);

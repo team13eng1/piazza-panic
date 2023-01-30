@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 public class HUD implements Disposable {
     public Stage stage;
+    private Boolean scenarioComplete;
 
     private Integer worldTimerM;
     private Integer worldTimerS;
@@ -33,6 +34,7 @@ public class HUD implements Disposable {
     Label orderNumLT;
 
     public HUD(SpriteBatch sb){
+        this.scenarioComplete = Boolean.FALSE;
         worldTimerM = 0;
         worldTimerS = 0;
         score = 0;
@@ -98,7 +100,8 @@ public class HUD implements Disposable {
     public void updateScore(Boolean scenarioComplete, Integer expectedTime){
         int addScore;
         int currentTime;
-        if(scenarioComplete==Boolean.TRUE){
+
+        if(this.scenarioComplete == Boolean.FALSE){
             currentTime = (worldTimerM * 60) + worldTimerS;
             if (currentTime <= expectedTime) {
                 addScore = 100;
@@ -110,6 +113,10 @@ public class HUD implements Disposable {
                 }
             }
             score += addScore;
+        }
+
+
+        if(scenarioComplete==Boolean.TRUE){
             scoreLabel.setColor(Color.GREEN);
             scoreLabel.setText("");
             scoreLabelT.setText("");
@@ -117,19 +124,9 @@ public class HUD implements Disposable {
             scoreLabel.remove();
             table.center().top();
             stage.addActor(table);
+            this.scenarioComplete = Boolean.TRUE;
             return;
         }
-        currentTime = (worldTimerM * 60) + worldTimerS;
-        if (currentTime <= expectedTime) {
-            addScore = 100;
-        }
-        else{
-            addScore = 100 - (5 * (currentTime -expectedTime));
-            if(addScore < 0){
-                addScore = 0;
-            }
-        }
-        score += addScore;
 
         table.left().top();
         scoreLabel.setText(String.format("%d", score));

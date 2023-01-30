@@ -11,7 +11,31 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.team13.piazzapanic.MainGame;
 import com.team13.piazzapanic.PlayScreen;
 
+/**
+ * B2WorldCreator is a class used to create Box2D World objects from a TiledMap.
+ * This class uses the map objects to create various objects like worktop, plates,
+ * chopperboard, bin, etc. based on the name assigned to the objects in the TiledMap.
+ *
+ * The class is instantiated with a World object, TiledMap object and PlayScreen object.
+ * It then uses the first layer of the TiledMap to create the objects and assign their
+ * positions. The objects are created as BodyDef objects and are passed to different sprite
+ * classes, where they are further defined and added to the world.
+ *
+ */
 public class B2WorldCreator {
+
+/**
+ * Constructor method for B2WorldCreator. It accepts a World, TiledMap and PlayScreen
+ * objects. The method then iterates over the cells in the first layer of the TiledMap and
+ * uses the map objects to create various objects like worktop, plates, chopperboard,
+ * bin, etc. based on the name assigned to the objects in the TiledMap.
+ *
+ * The objects are created as BodyDef objects and are passed to different sprite classes,
+ * where they are further defined and added to the world.
+ *
+ * @param world The Box2D World object.
+ * @param map The TiledMap object.
+ * */
 
     public B2WorldCreator(World world, TiledMap map, PlayScreen screen) {
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);

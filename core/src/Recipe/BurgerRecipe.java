@@ -6,6 +6,15 @@ import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;
 
+
+/**
+
+ The BurgerRecipe class is a subclass of the Recipe class and represents a burger dish in the kitchen game.
+ It holds an ArrayList of ingredients needed to make a burger and a Texture of the completed dish image.
+ The ingredients in the ArrayList consist of a {@link Ingredients.Bun} and a {@link Ingredients.Steak}.
+ */
+
+
 public class BurgerRecipe extends Recipe{
 
     public BurgerRecipe(){
