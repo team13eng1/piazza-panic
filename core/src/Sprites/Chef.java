@@ -15,6 +15,15 @@ import com.team13.piazzapanic.MainGame;
 
 import java.util.Objects;
 
+/**
+ * Chef class extends {@link Sprite} and represents a chef in the game.
+ * It has fields for the world it exists in, a Box2D body, the initial X and Y
+ * positions, a wait timer, collision flag, various textures for different skins,
+ * state (UP, DOWN, LEFT, RIGHT), skin needed, fixture of what it is touching, ingredient
+ * and recipe in hand, control flag, circle sprite, chef notification X, Y, width and height,
+ * and completed dish station.
+ */
+
 public class Chef extends Sprite {
     public World world;
     public Body b2body;
@@ -67,6 +76,13 @@ public class Chef extends Sprite {
     public int nextOrderAppearTime;
     public Recipe previousInHandRecipe;
 
+    /**
+     * Chef class constructor that initializes all the fields
+     * @param world the world the chef exists in
+     * @param startX starting X position
+     * @param startY starting Y position
+     */
+
     public Chef(World world, float startX, float startY) {
         initialX = startX / MainGame.PPM;
         initialY = startY / MainGame.PPM;
@@ -111,6 +127,12 @@ public class Chef extends Sprite {
         completedStation = null;
     }
 
+
+    /**
+     * Update the position and region of the chef and set the notification position based on the chef's current state.
+     *
+     * @param dt The delta time.
+     */
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         currentSkin = getSkin(dt);
@@ -188,6 +210,12 @@ public class Chef extends Sprite {
         }
     }
 
+    /**
+     * This method sets the bounds for the notification based on the given direction.
+     * @param direction - A string representing the direction of the notification.
+     *                   Can be "Left", "Right", "Up", or "Down".
+     */
+
     public void notificationSetBounds(String direction) {
         switch (direction) {
             case "Left":
@@ -206,12 +234,24 @@ public class Chef extends Sprite {
         }
     }
 
+    /**
+     Draws a notification to help the user understand what chef they are controlling.
+     The notification is a sprite that looks like at "C" on the controlled chef.
+     @param batch The sprite batch that the notification should be drawn with.
+     */
     public void drawNotification(SpriteBatch batch) {
         if (this.getUserControlChef()) {
             circleSprite.setBounds(notificationX, notificationY, notificationWidth, notificationHeight);
             circleSprite.draw(batch);
         }
     }
+
+    /**
+     * Get the texture region for the current state of the player.
+     *
+     * @param dt the time difference between this and the last frame
+     * @return the texture region for the player's current state
+     */
 
     private TextureRegion getSkin(float dt) {
         currentState = getState();
@@ -236,6 +276,11 @@ public class Chef extends Sprite {
         return region;
     }
 
+
+    /**
+     Returns the current state of the player based on the controlled chefs velocity.
+     @return current state of the player - UP, DOWN, LEFT, or RIGHT
+     */
     public State getState() {
         if (b2body.getLinearVelocity().y > 0)
             return State.UP;
@@ -248,6 +293,16 @@ public class Chef extends Sprite {
         else
             return currentState;
     }
+
+    /**
+     * Define the body and fixture of the chef object.
+     *
+     * This method creates a dynamic body definition and sets its position with the `initialX` and `initialY`
+     * variables, then creates the body in the physics world. A fixture definition is also created and a
+     * circle shape is set with a radius of `4.5f / MainGame.PPM` and a position shifted by `(0.5f / MainGame.PPM)`
+     * in the x-axis and `-(5.5f / MainGame.PPM)` in the y-axis. The created fixture is then set as the user data
+     * of the chef object.
+     */
 
     public void defineChef() {
         BodyDef bdef = new BodyDef();
@@ -264,6 +319,34 @@ public class Chef extends Sprite {
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
     }
+
+
+    /**
+     * Method to set the skin of the chef character based on the item the chef is holding.
+     *
+     * @param item the item that chef is holding
+     *
+     * The skin is set based on the following cases:
+     * - if item is null, then the skin is set to normalChef
+     * - if item is a Lettuce, then the skin is set to
+     *    - choppedLettuceChef if the lettuce is prepared
+     *    - lettuceChef if the lettuce is not prepared
+     * - if item is a Steak, then the skin is set to
+     *    - burgerChef if the steak is prepared and cooked
+     *    - pattyChef if the steak is prepared but not cooked
+     *    - meatChef if the steak is not prepared
+     * - if item is an Onion, then the skin is set to
+     *    - choppedOnionChef if the onion is prepared
+     *    - onionChef if the onion is not prepared
+     * - if item is a Tomato, then the skin is set to
+     *    - choppedTomatoChef if the tomato is prepared
+     *    - tomatoChef if the tomato is not prepared
+     * - if item is a Bun, then the skin is set to
+     *    - bunsToastedChef if the bun is cooked
+     *    - bunsChef if the bun is not cooked
+     * - if item is a BurgerRecipe, then the skin is set to completedBurgerChef
+     * - if item is a SaladRecipe, then the skin is set to saladChef
+     */
 
     public void setChefSkin(Object item) {
         if (item == null) {
@@ -307,6 +390,11 @@ public class Chef extends Sprite {
         }
     }
 
+    /**
+     * Method to display the ingredient on the specific interactive tile objects (ChoppingBoard/Pan)
+     * @param batch the SpriteBatch used to render the texture.
+     */
+
     public void displayIngStatic(SpriteBatch batch) {
         Gdx.app.log("", inHandsIng.toString());
         if (whatTouching != null && !chefOnChefCollision) {
@@ -323,6 +411,13 @@ public class Chef extends Sprite {
         }
     }
 
+    /**
+     * The method creates an instance of the recipe and sets its position on the completed station coordinates.
+     * The method also implements a timer for each ingredient which gets removed from the screen after a certain amount of time.
+     *
+     * @param batch The batch used for drawing the sprite on the screen
+     */
+
     public void displayIngDynamic(SpriteBatch batch){
         waitTimer += 1/60f;
         previousInHandRecipe.create(completedStation.getX(), completedStation.getY() - (0.01f / MainGame.PPM), batch);
@@ -331,59 +426,129 @@ public class Chef extends Sprite {
             waitTimer = 0;
         }
     }
+
+    /**
+
+      * This method updates the state of the chef when it is in a collision with another chef.
+      * The method sets the userControlChef to false, meaning the user cannot control the chef while it's in collision.
+      * It also sets the chefOnChefCollision to true, indicating that the chef is in collision with another chef.
+      * Finally, it calls the setStartVector method to update the position of the chef.
+     */
         public void chefsColliding () {
             userControlChef = false;
             chefOnChefCollision = true;
             setStartVector();
         }
 
-        public void setStartVector () {
-            startVector = new Vector2(b2body.getLinearVelocity().x, b2body.getLinearVelocity().y);
+    /**
+     * Set the starting velocity vector of the chef
+     * when the chef collides with another chef
+     *
+     */
+    public void setStartVector () {
+        startVector = new Vector2(b2body.getLinearVelocity().x, b2body.getLinearVelocity().y);
+    }
 
-        }
-        public void setTouchingTile (Fixture obj){
-            this.whatTouching = obj;
-        }
+    /**
+     * Set the touching tile fixture
+     *
+     * @param obj fixture that the chef is touching
+     */
+    public void setTouchingTile (Fixture obj){
+        this.whatTouching = obj;
+    }
 
-        public Fixture getTouchingTile () {
-            if (whatTouching == null) {
-                return null;
-            } else {
-                return whatTouching;
-            }
+    /**
+     * Get the fixture that the chef is touching
+     *
+     * @return the fixture that the chef is touching
+     */
+    public Fixture getTouchingTile () {
+        if (whatTouching == null) {
+            return null;
+        } else {
+            return whatTouching;
         }
-        public Ingredient getInHandsIng () {
-            return inHandsIng;
-        }
-        public Recipe getInHandsRecipe () {
-            return inHandsRecipe;
-        }
+    }
 
-        public void setInHandsIng (Ingredient ing){
-            inHandsIng = ing;
-            inHandsRecipe = null;
-        }
+    /**
+     * Get the ingredient that the chef is holding
+     *
+     * @return the ingredient that the chef is holding
+     */
+    public Ingredient getInHandsIng () {
+        return inHandsIng;
+    }
 
-        public void setInHandsRecipe (Recipe recipe){
-            inHandsRecipe = recipe;
-            inHandsIng = null;
-        }
+    /**
+     * Get the recipe that the chef is holding
+     *
+     * @return the recipe that the chef is holding
+     */
+    public Recipe getInHandsRecipe () {
+        return inHandsRecipe;
+    }
 
-        public void setUserControlChef ( boolean value){
-            userControlChef = value;
+    /**
+     * Set the ingredient that the chef is holding
+     *
+     * @param ing the ingredient that the chef is holding
+     */
+    public void setInHandsIng (Ingredient ing){
+        inHandsIng = ing;
+        inHandsRecipe = null;
+    }
 
-        }
-        public boolean getUserControlChef () {
+    /**
+     * Set the recipe that the chef is holding
+     *
+     * @param recipe the recipe that the chef is holding
+     */
+    public void setInHandsRecipe (Recipe recipe){
+        inHandsRecipe = recipe;
+        inHandsIng = null;
+    }
+
+    /**
+     * Set the chef's control by the user
+     *
+     * @param value whether the chef is controlled by the user
+     */
+    public void setUserControlChef ( boolean value){
+        userControlChef = value;
+
+    }
+
+    /**
+
+     * Returns a boolean value indicating whether the chef is under user control.
+     * If not specified, returns false.
+     *
+     * @return userControlChef The boolean value indicating chef's control.
+     */
+    public boolean getUserControlChef () {
             return Objects.requireNonNullElse(userControlChef, false);
         }
 
-        public void dropItemOn (InteractiveTileObject station, Ingredient ing){
-            if (station instanceof PlateStation) {
-                ((PlateStation) station).dropItem(ing);
-            }
-            setInHandsRecipe(null);
-        }
 
+    /**
+      * Drops the given ingredient on a plate station.
+      * @param station The plate station to drop the ingredient on.
+      * @param ing The ingredient to be dropped.
+     */
+
+    public void dropItemOn (InteractiveTileObject station, Ingredient ing){
+        if (station instanceof PlateStation) {
+                ((PlateStation) station).dropItem(ing);
+        }
+        setInHandsRecipe(null);
+    }
+
+    /**
+     * Drops the in-hand recipe on a completed dish station and saves the previous in-hand recipe.
+     *
+     * @param station The completed dish station to drop the recipe on.
+     */
         public void dropItemOn (InteractiveTileObject station){
             if (station instanceof CompletedDishStation) {
                 previousInHandRecipe = getInHandsRecipe();
@@ -392,6 +557,11 @@ public class Chef extends Sprite {
             setInHandsRecipe(null);
         }
 
+    /**
+     * Picks up an item from a plate station and sets it as in-hand ingredient or recipe.
+     *
+     * @param station The plate station to pick up the item from.
+     */
     public void pickUpItemFrom(InteractiveTileObject station){
         if (station instanceof PlateStation){
             PlateStation pStation = (PlateStation) station;
