@@ -9,10 +9,35 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.team13.piazzapanic.MainGame;
+import com.team13.piazzapanic.PlayScreen;
 
+/**
+ * B2WorldCreator is a class used to create Box2D World objects from a TiledMap.
+ * This class uses the map objects to create various objects like worktop, plates,
+ * chopperboard, bin, etc. based on the name assigned to the objects in the TiledMap.
+ *
+ * The class is instantiated with a World object, TiledMap object and PlayScreen object.
+ * It then uses the first layer of the TiledMap to create the objects and assign their
+ * positions. The objects are created as BodyDef objects and are passed to different sprite
+ * classes, where they are further defined and added to the world.
+ *
+ */
 public class B2WorldCreator {
 
-    public B2WorldCreator(World world, TiledMap map) {
+/**
+ * Constructor method for B2WorldCreator. It accepts a World, TiledMap and PlayScreen
+ * objects. The method then iterates over the cells in the first layer of the TiledMap and
+ * uses the map objects to create various objects like worktop, plates, chopperboard,
+ * bin, etc. based on the name assigned to the objects in the TiledMap.
+ *
+ * The objects are created as BodyDef objects and are passed to different sprite classes,
+ * where they are further defined and added to the world.
+ *
+ * @param world The Box2D World object.
+ * @param map The TiledMap object.
+ * */
+
+    public B2WorldCreator(World world, TiledMap map, PlayScreen screen) {
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
@@ -37,35 +62,36 @@ public class B2WorldCreator {
                 bdef.position.set(position_x / MainGame.PPM, position_y / MainGame.PPM);
                 bdef.type = BodyDef.BodyType.StaticBody;
 
-
-                // Adds the name of the tile to the body, in the future could add an instance of the matching class
                 if (mapObject.getName().equals("bin")) {
                     new Bin(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("worktop")){
+                } else if (mapObject.getName().equals("worktop")) {
                     new Worktop(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("chopping_board")) {
+                } else if (mapObject.getName().equals("chopping_board")) {
                     new ChoppingBoard(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("plate")){
-                    new PlateStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("tomato")) {
+                } else if (mapObject.getName().equals("plate")) {
+                    screen.plateStation = new PlateStation(world, map, bdef, rectangle);
+                } else if (mapObject.getName().equals("tomato")) {
                     new TomatoStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("lettuce")){
+                } else if (mapObject.getName().equals("lettuce")) {
                     new LettuceStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("buns")) {
+                } else if (mapObject.getName().equals("buns")) {
                     new BunsStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("onion")){
+                } else if (mapObject.getName().equals("onion")) {
                     new OnionStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("pan1")) {
+                } else if (mapObject.getName().equals("pan1")) {
                     new Pan(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("steak")){
+                } else if (mapObject.getName().equals("steak")) {
                     new SteakStation(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("pan2")) {
+                } else if (mapObject.getName().equals("pan2")) {
                     new Pan(world, map, bdef, rectangle);
-                } else if(mapObject.getName().equals("completed_dish")){
+                } else if (mapObject.getName().equals("completed_dish")) {
                     new CompletedDishStation(world, map, bdef, rectangle);
+                } else if (mapObject.getName().equals("order_top")) {
+                    PlayScreen.trayX = rectangle.x;
+                    PlayScreen.trayY = rectangle.y;
                 }
+
             }
         }
-
     }
 }
