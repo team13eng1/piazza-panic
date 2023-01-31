@@ -96,7 +96,12 @@ public class HUD implements Disposable {
             }
         }
         table.left().top();
-        timeStr = String.format("%d", worldTimerM) + ":" + String.format("%d", worldTimerS);
+        if(worldTimerS < 10){
+            timeStr = String.format("%d", worldTimerM) + ":0" + String.format("%d", worldTimerS);
+        }
+        else {
+            timeStr = String.format("%d", worldTimerM) + ":" + String.format("%d", worldTimerS);
+        }
         timeLabel.setText(timeStr);
         stage.addActor(table);
 
