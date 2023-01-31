@@ -2,7 +2,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/team13eng1/piazza-panic/">
     <img src="assets/Chef/Chef_normal.png" alt="Logo" width="80" height="80">
   </a>
 
