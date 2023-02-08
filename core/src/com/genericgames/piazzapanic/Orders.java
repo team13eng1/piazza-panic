@@ -1,4 +1,4 @@
-package com.team13.piazzapanic;
+package com.genericgames.piazzapanic;
 
 import Recipe.Order;
 import com.badlogic.gdx.graphics.OrthographicCamera;

@@ -8,8 +8,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
-import com.team13.piazzapanic.MainGame;
-import com.team13.piazzapanic.PlayScreen;
+import com.genericgames.piazzapanic.MainGame;
+import com.genericgames.piazzapanic.PlayScreen;
 
 /**
  * B2WorldCreator is a class used to create Box2D World objects from a TiledMap.

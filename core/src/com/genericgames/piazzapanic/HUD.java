@@ -1,4 +1,4 @@
-package com.team13.piazzapanic;
+package com.genericgames.piazzapanic;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;

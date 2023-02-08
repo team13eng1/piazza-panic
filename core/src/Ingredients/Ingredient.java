@@ -3,7 +3,7 @@ package Ingredients;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.team13.piazzapanic.MainGame;
+import com.genericgames.piazzapanic.MainGame;
 
 import java.util.ArrayList;
 
