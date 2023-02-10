@@ -3,7 +3,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/team13eng1/piazza-panic/">
-    <img src="assets/Chef/Chef_normal.png" alt="Logo" width="80" height="80">
+    <img src="piazza-panic-main/assets/Chef/Chef_normal.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Piazza Panic</h3>
@@ -76,7 +76,7 @@ It's a fun little game with serious software engineering principles.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[product-screenshot]: assets/startImage.png
+[product-screenshot]: piazza-panic-main/assets/startImage.png
 [libgdx.js]: https://img.shields.io/badge/LibGDX-20232A?style=for-the-badge&logo=libgdx&logoColor=61DAFB
 [libgdx-url]: https://libgdx.com/
 [tiled.js]: https://img.shields.io/badge/Tiled-20232A?style=for-the-badge&logo=tiled&logoColor=61DAFB
