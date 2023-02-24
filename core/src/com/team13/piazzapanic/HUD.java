@@ -20,6 +20,7 @@ public class HUD implements Disposable {
     private Integer worldTimerS;
 
     private Integer score;
+    Integer repPoints = 3;
 
     public String timeStr;
 
@@ -32,6 +33,9 @@ public class HUD implements Disposable {
     Label scoreLabelT;
     Label orderNumL;
     Label orderNumLT;
+
+    Label reputation;
+    Label reputationT;
 
     public HUD(SpriteBatch sb){
         this.scenarioComplete = Boolean.FALSE;
@@ -59,14 +63,22 @@ public class HUD implements Disposable {
         scoreLabel = new Label(String.format("%d", score), new Label.LabelStyle(font, Color.WHITE));
         scoreLabelT = new Label("MONEY", new Label.LabelStyle(font, Color.BLACK));
 
+        reputationT = new Label("REP", new Label.LabelStyle(font, Color.BLACK));
+        reputation = new Label(String.format("%d", repPoints), new Label.LabelStyle(font, Color.WHITE));
+
+
 
         table.add(timeLabelT).padTop(2).padLeft(2);
         table.add(scoreLabelT).padTop(2).padLeft(2);
         table.add(orderNumLT).padTop(2).padLeft(2);
+        table.add(reputationT).padTop(2).padLeft(2);;
         table.row();
         table.add(timeLabel).padTop(2).padLeft(2);
         table.add(scoreLabel).padTop(2).padLeft(2);
         table.add(orderNumL).padTop(2).padLeft(2);
+
+
+        table.add(reputation);
 
         table.left().top();
         stage.addActor(table);
@@ -170,6 +182,19 @@ public class HUD implements Disposable {
         orderNumLT.setText("ORDER");
         stage.addActor(table);
 
+    }
+
+    public int decrementReps(){
+        System.out.println("I ran");
+        repPoints --;
+        reputation.setText(String.format("%d", repPoints));
+
+        stage.addActor(table);
+        return  repPoints;
+    }
+
+    public Integer getRepPoints() {
+        return repPoints;
     }
 
     @Override

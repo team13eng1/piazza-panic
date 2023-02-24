@@ -35,6 +35,9 @@ public class MainGame extends Game {
 	public boolean isPlayScreen;
 	private PlayScreen playScreen;
 	private StartScreen startScreen;
+	private idleScreen idleGame;
+	private GameOver gameover;
+	private boolean isGameOver = false;
 
 	public MainGame(){
 		isPlayScreen = false;
@@ -44,6 +47,9 @@ public class MainGame extends Game {
 		batch = new SpriteBatch();
 		startScreen = new StartScreen(this);
 		playScreen = new PlayScreen(this);
+		gameover = new GameOver(this);
+		idleGame = new idleScreen(this);
+
 	}
 
 	@Override
@@ -54,14 +60,24 @@ public class MainGame extends Game {
 		}
 		if (isPlayScreen) {
 			setScreen(playScreen);
+
 		} else {
 			setScreen(startScreen);
 		}
+
+	if (isGameOver){
+		setScreen(gameover);
+	}
+
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
 		batch.dispose();
+	}
+	public void goToGameOver(){
+		System.out.println("i also  ran");
+		isGameOver = true;
 	}
 }
