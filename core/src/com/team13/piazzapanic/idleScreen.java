@@ -70,7 +70,7 @@ public class idleScreen implements Screen {
      */
 
     public idleScreen(MainGame game){
-        aiChef = new chefAI(this);
+
         this.game = game;
         gameover = new GameOver(game);
 
@@ -94,6 +94,7 @@ public class idleScreen implements Screen {
 
         chef1 = new Chef(this.world, 31.5F,65);
         chef2 = new Chef(this.world, 128,65);
+        aiChef = new chefAI(this);
         controlledChef = chef1;
         world.setContactListener(new WorldContactListener());
         controlledChef.notificationSetBounds("Down");
@@ -129,6 +130,11 @@ public class idleScreen implements Screen {
      */
 
     public void handleInput(float dt, String AIinput){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)){
+            game.disableIdle();
+        }
+
+
         if ((AIinput == "r"  &&
                 chef1.getUserControlChef() &&
                 chef2.getUserControlChef())) {
@@ -284,13 +290,14 @@ public class idleScreen implements Screen {
     public void update(float dt){
         //TODO implement AI chef
         aiChef.returnKeyboardInput();
-        handleInput(dt, "w");
+        handleInput(dt, aiChef.returnKeyboardInput());
 
         gamecam.update();
         renderer.setView(gamecam);
         chef1.update(dt);
         chef2.update(dt);
         world.step(1/60f, 6, 2);
+        //aiChef.defineShortestPath(6,1, 7,6);
 
     }
 

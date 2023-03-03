@@ -21,6 +21,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -62,7 +63,7 @@ public class PlayScreen implements Screen {
     private final World world;
     private final Chef chef1;
     private final Chef chef2;
-
+    private long idleGametimer;
     private Chef controlledChef;
 
     public ArrayList<Order> ordersArray;
@@ -89,6 +90,7 @@ public class PlayScreen implements Screen {
      */
 
     public PlayScreen(MainGame game){
+        idleGametimer = TimeUtils.millis();
         this.game = game;
         gameover = new GameOver(game);
 
@@ -147,13 +149,16 @@ public class PlayScreen implements Screen {
      */
 
     public void handleInput(float dt){
+
         if ((Gdx.input.isKeyJustPressed(Input.Keys.R) &&
                 chef1.getUserControlChef() &&
                 chef2.getUserControlChef())) {
             if (controlledChef.equals(chef1)) {
+                idleGametimer = TimeUtils.millis();
                 controlledChef.b2body.setLinearVelocity(0, 0);
                 controlledChef = chef2;
             } else {
+                idleGametimer = TimeUtils.millis();
                 controlledChef.b2body.setLinearVelocity(0, 0);
                 controlledChef = chef1;
             }
@@ -172,15 +177,19 @@ public class PlayScreen implements Screen {
                 float yVelocity = 0;
 
                 if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+                    idleGametimer = TimeUtils.millis();
                     yVelocity += 0.5f;
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                    idleGametimer = TimeUtils.millis();
                     xVelocity -= 0.5f;
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                    idleGametimer = TimeUtils.millis();
                     yVelocity -= 0.5f;
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                    idleGametimer = TimeUtils.millis();
                     xVelocity += 0.5f;
                 }
                 controlledChef.b2body.setLinearVelocity(xVelocity, yVelocity);
@@ -203,6 +212,7 @@ public class PlayScreen implements Screen {
 
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+            idleGametimer = TimeUtils.millis();
                 if(controlledChef.getTouchingTile() != null){
                     InteractiveTileObject tile = (InteractiveTileObject) controlledChef.getTouchingTile().getUserData();
                     String tileName = tile.getClass().getName();
@@ -364,9 +374,21 @@ public class PlayScreen implements Screen {
 
      @param delta The time in seconds since the last frame.
      */
+    public void setTAimer(){
+
+        idleGametimer = TimeUtils.millis();
+
+    }
+
     @Override
+
+
     public void render(float delta){
         update(delta);
+
+        if (TimeUtils.timeSinceMillis(idleGametimer) > 20000){
+            game.goToIdle();
+        }
 
         //Execute handleEvent each 1 second
         timeSeconds +=Gdx.graphics.getRawDeltaTime();

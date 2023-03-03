@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class MainGame extends Game {
 
@@ -38,6 +39,8 @@ public class MainGame extends Game {
 	private idleScreen idleGame;
 	private GameOver gameover;
 	private boolean isGameOver = false;
+	private boolean goToIdle = false;
+
 
 	public MainGame(){
 		isPlayScreen = false;
@@ -50,10 +53,13 @@ public class MainGame extends Game {
 		gameover = new GameOver(this);
 		idleGame = new idleScreen(this);
 
+
 	}
 
 	@Override
 	public void render() {
+
+
 		super.render();
 		if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)){
 			isPlayScreen = !isPlayScreen;
@@ -68,6 +74,9 @@ public class MainGame extends Game {
 	if (isGameOver){
 		setScreen(gameover);
 	}
+	if (goToIdle){
+		setScreen(idleGame);
+	}
 
 	}
 
@@ -79,5 +88,13 @@ public class MainGame extends Game {
 	public void goToGameOver(){
 		System.out.println("i also  ran");
 		isGameOver = true;
+	}
+	public void goToIdle(){
+		goToIdle = true;
+
+	}
+	public void disableIdle(){
+		goToIdle = false;
+		playScreen.setTAimer();
 	}
 }
