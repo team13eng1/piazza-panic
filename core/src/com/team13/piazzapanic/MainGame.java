@@ -38,8 +38,10 @@ public class MainGame extends Game {
 	private StartScreen startScreen;
 	private idleScreen idleGame;
 	private GameOver gameover;
+	private endlessMode endless;
 	private boolean isGameOver = false;
 	private boolean goToIdle = false;
+	private boolean isEndless = false;
 
 
 	public MainGame(){
@@ -52,6 +54,7 @@ public class MainGame extends Game {
 		playScreen = new PlayScreen(this);
 		gameover = new GameOver(this);
 		idleGame = new idleScreen(this);
+		endless = new endlessMode(this);
 
 
 	}
@@ -60,23 +63,41 @@ public class MainGame extends Game {
 	public void render() {
 
 
+
+
 		super.render();
 		if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)){
 			isPlayScreen = !isPlayScreen;
 		}
-		if (isPlayScreen) {
+		if (isPlayScreen && !isEndless) {
 			setScreen(playScreen);
 
 		} else {
-			setScreen(startScreen);
+			if (!isEndless) {
+				setScreen(startScreen);
+			}
 		}
 
-	if (isGameOver){
-		setScreen(gameover);
-	}
-	if (goToIdle){
-		setScreen(idleGame);
-	}
+
+
+
+		if (Gdx.input.isKeyJustPressed(Input.Keys.Z)){
+			if (! isPlayScreen){
+				isEndless = true;
+				System.out.println("endlessMode");
+				setScreen(endless);
+
+			}
+
+		}
+
+		if (goToIdle){
+			setScreen(idleGame);
+		}
+
+		if (isGameOver){
+			setScreen(gameover);
+		}
 
 	}
 

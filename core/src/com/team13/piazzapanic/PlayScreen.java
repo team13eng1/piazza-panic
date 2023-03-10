@@ -5,13 +5,17 @@ import Recipe.Recipe;
 import Sprites.*;
 import Recipe.Order;
 import Tools.B2WorldCreator;
+import Tools.Overlay;
 import Tools.WorldContactListener;
 
+import Tools.kitchenChangerAPI;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -49,22 +53,23 @@ import com.team13.piazzapanic.GameOver;
 
 public class PlayScreen implements Screen {
 
-    private final MainGame game;
+    public final MainGame game;
     private final OrthographicCamera gamecam;
     private final Viewport gameport;
-    private final HUD hud;
+    public final HUD hud;
     private orderBar orderTimer =  new  orderBar(105,120,50,5, Color.RED);;
     private float orderTime = 1;
     private boolean isActiveOrder = false;
     private GameOver gameover;
-    private final TiledMap map;
-    private final OrthogonalTiledMapRenderer renderer;
+    private TiledMap map;
+    private OrthogonalTiledMapRenderer renderer;
 
     private final World world;
     private final Chef chef1;
     private final Chef chef2;
     private long idleGametimer;
     private Chef controlledChef;
+    private kitchenChangerAPI kitchenEdit;
 
     public ArrayList<Order> ordersArray;
 
@@ -90,6 +95,7 @@ public class PlayScreen implements Screen {
      */
 
     public PlayScreen(MainGame game){
+        kitchenEdit = new kitchenChangerAPI();
         idleGametimer = TimeUtils.millis();
         this.game = game;
         gameover = new GameOver(game);
@@ -212,6 +218,18 @@ public class PlayScreen implements Screen {
 
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+            kitchenEdit.readFile();
+            kitchenEdit.editCVSFile(2,8, "6");
+                TmxMapLoader mapLoader = new TmxMapLoader(new LocalFileHandleResolver());
+            AssetManager manager = new AssetManager();
+            TmxMapLoader loader = new TmxMapLoader(); manager.setLoader(TiledMap.class, loader); manager.load("assets/mytexture.png", TiledMap.class);
+
+            map = mapLoader.load("assets/KitchenTemp.tmx");
+
+
+
+            renderer = new OrthogonalTiledMapRenderer(map, 1 / MainGame.PPM);
+            gamecam.position.set(gameport.getWorldWidth() / 2, gameport.getWorldHeight() / 2, 0);
             idleGametimer = TimeUtils.millis();
                 if(controlledChef.getTouchingTile() != null){
                     InteractiveTileObject tile = (InteractiveTileObject) controlledChef.getTouchingTile().getUserData();
@@ -301,6 +319,10 @@ public class PlayScreen implements Screen {
 
                 }
             }
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+            System.out.println("do stuff!!!!!!!!!!!!!!!");
+            //Some stuff
+        }
         }
 
     /**
@@ -384,6 +406,12 @@ public class PlayScreen implements Screen {
 
 
     public void render(float delta){
+
+
+
+
+
+
         update(delta);
 
         if (TimeUtils.timeSinceMillis(idleGametimer) > 20000){

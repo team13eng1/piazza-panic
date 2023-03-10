@@ -98,6 +98,8 @@ public class B2WorldCreator {
 
 
     public B2WorldCreator(World world, TiledMap map, idleScreen screen) {
+
+        //TODO CHANGE IDLE SCREEN SO THAT THIS SECOND CLASS IS NOT NEEDED :)
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
