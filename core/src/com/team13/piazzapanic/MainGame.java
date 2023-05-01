@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class MainGame extends Game {
 
@@ -35,6 +36,13 @@ public class MainGame extends Game {
 	public boolean isPlayScreen;
 	private PlayScreen playScreen;
 	private StartScreen startScreen;
+	private idleScreen idleGame;
+	private GameOver gameover;
+	private endlessMode endless;
+	private boolean isGameOver = false;
+	private boolean goToIdle = false;
+	private boolean isEndless = false;
+
 
 	public MainGame(){
 		isPlayScreen = false;
@@ -44,24 +52,70 @@ public class MainGame extends Game {
 		batch = new SpriteBatch();
 		startScreen = new StartScreen(this);
 		playScreen = new PlayScreen(this);
+		gameover = new GameOver(this);
+		idleGame = new idleScreen(this);
+		endless = new endlessMode(this);
+
+
 	}
 
 	@Override
 	public void render() {
+
+
+
+
 		super.render();
 		if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)){
 			isPlayScreen = !isPlayScreen;
 		}
-		if (isPlayScreen) {
+		if (isPlayScreen && !isEndless) {
 			setScreen(playScreen);
+
 		} else {
-			setScreen(startScreen);
+			if (!isEndless) {
+				setScreen(startScreen);
+			}
 		}
+
+
+
+
+		if (Gdx.input.isKeyJustPressed(Input.Keys.Z)){
+			if (! isPlayScreen){
+				isEndless = true;
+				System.out.println("endlessMode");
+				setScreen(endless);
+
+			}
+
+		}
+
+		if (goToIdle){
+			setScreen(idleGame);
+		}
+
+		if (isGameOver){
+			setScreen(gameover);
+		}
+
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
 		batch.dispose();
+	}
+	public void goToGameOver(){
+		System.out.println("i also  ran");
+		isGameOver = true;
+	}
+	public void goToIdle(){
+		goToIdle = true;
+
+	}
+	public void disableIdle(){
+		goToIdle = false;
+		playScreen.setTAimer();
 	}
 }

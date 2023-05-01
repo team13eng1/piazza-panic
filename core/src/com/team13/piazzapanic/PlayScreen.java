@@ -5,12 +5,18 @@ import Recipe.Recipe;
 import Sprites.*;
 import Recipe.Order;
 import Tools.B2WorldCreator;
+import Tools.Overlay;
 import Tools.WorldContactListener;
 
+import Tools.kitchenChangerAPI;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,11 +25,13 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import com.team13.piazzapanic.GameOver;
 
 /**
  * The PlayScreen class is responsible for displaying the game to the user and handling the user's interactions.
@@ -45,19 +53,23 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayScreen implements Screen {
 
-    private final MainGame game;
+    public final MainGame game;
     private final OrthographicCamera gamecam;
     private final Viewport gameport;
-    private final HUD hud;
-
-    private final TiledMap map;
-    private final OrthogonalTiledMapRenderer renderer;
+    public final HUD hud;
+    private orderBar orderTimer =  new  orderBar(105,120,50,5, Color.RED);;
+    private float orderTime = 1;
+    private boolean isActiveOrder = false;
+    private GameOver gameover;
+    private TiledMap map;
+    private OrthogonalTiledMapRenderer renderer;
 
     private final World world;
     private final Chef chef1;
     private final Chef chef2;
-
+    private long idleGametimer;
     private Chef controlledChef;
+    private kitchenChangerAPI kitchenEdit;
 
     public ArrayList<Order> ordersArray;
 
@@ -83,7 +95,11 @@ public class PlayScreen implements Screen {
      */
 
     public PlayScreen(MainGame game){
+        kitchenEdit = new kitchenChangerAPI();
+        idleGametimer = TimeUtils.millis();
         this.game = game;
+        gameover = new GameOver(game);
+
         scenarioComplete = Boolean.FALSE;
         createdOrder = Boolean.FALSE;
         gamecam = new OrthographicCamera();
@@ -139,13 +155,16 @@ public class PlayScreen implements Screen {
      */
 
     public void handleInput(float dt){
+
         if ((Gdx.input.isKeyJustPressed(Input.Keys.R) &&
                 chef1.getUserControlChef() &&
                 chef2.getUserControlChef())) {
             if (controlledChef.equals(chef1)) {
+                idleGametimer = TimeUtils.millis();
                 controlledChef.b2body.setLinearVelocity(0, 0);
                 controlledChef = chef2;
             } else {
+                idleGametimer = TimeUtils.millis();
                 controlledChef.b2body.setLinearVelocity(0, 0);
                 controlledChef = chef1;
             }
@@ -164,15 +183,19 @@ public class PlayScreen implements Screen {
                 float yVelocity = 0;
 
                 if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+                    idleGametimer = TimeUtils.millis();
                     yVelocity += 0.5f;
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                    idleGametimer = TimeUtils.millis();
                     xVelocity -= 0.5f;
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                    idleGametimer = TimeUtils.millis();
                     yVelocity -= 0.5f;
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                    idleGametimer = TimeUtils.millis();
                     xVelocity += 0.5f;
                 }
                 controlledChef.b2body.setLinearVelocity(xVelocity, yVelocity);
@@ -195,6 +218,19 @@ public class PlayScreen implements Screen {
 
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
+            kitchenEdit.readFile();
+            kitchenEdit.editCVSFile(2,8, "6");
+                TmxMapLoader mapLoader = new TmxMapLoader(new LocalFileHandleResolver());
+            AssetManager manager = new AssetManager();
+            TmxMapLoader loader = new TmxMapLoader(); manager.setLoader(TiledMap.class, loader); manager.load("assets/mytexture.png", TiledMap.class);
+
+            map = mapLoader.load("assets/KitchenTemp.tmx");
+
+
+
+            renderer = new OrthogonalTiledMapRenderer(map, 1 / MainGame.PPM);
+            gamecam.position.set(gameport.getWorldWidth() / 2, gameport.getWorldHeight() / 2, 0);
+            idleGametimer = TimeUtils.millis();
                 if(controlledChef.getTouchingTile() != null){
                     InteractiveTileObject tile = (InteractiveTileObject) controlledChef.getTouchingTile().getUserData();
                     String tileName = tile.getClass().getName();
@@ -264,6 +300,11 @@ public class PlayScreen implements Screen {
                             case "Sprites.CompletedDishStation":
                                 if (controlledChef.getInHandsRecipe() != null){
                                     if(controlledChef.getInHandsRecipe().getClass().equals(ordersArray.get(0).recipe.getClass())){
+                                        //TODO UPDATE CHANGE LOG FOR THIS
+                                        if (orderTime == 0){
+                                            hud.decrementReps();
+                                            if (hud.getRepPoints() == 0){System.out.println("game over"); game.goToGameOver();}
+                                        }
                                         controlledChef.dropItemOn(tile);
                                         ordersArray.get(0).orderComplete = true;
                                         controlledChef.setChefSkin(null);
@@ -278,6 +319,10 @@ public class PlayScreen implements Screen {
 
                 }
             }
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+            System.out.println("do stuff!!!!!!!!!!!!!!!");
+            //Some stuff
+        }
         }
 
     /**
@@ -300,6 +345,9 @@ public class PlayScreen implements Screen {
      * Creates the orders randomly and adds to an array, updates the HUD.
      */
     public void createOrder() {
+        isActiveOrder = true;
+        orderTime = 1;
+
         int randomNum = ThreadLocalRandom.current().nextInt(1, 2 + 1);
         Texture burger_recipe = new Texture("Food/burger_recipe.png");
         Texture salad_recipe = new Texture("Food/salad_recipe.png");
@@ -348,9 +396,27 @@ public class PlayScreen implements Screen {
 
      @param delta The time in seconds since the last frame.
      */
+    public void setTAimer(){
+
+        idleGametimer = TimeUtils.millis();
+
+    }
+
     @Override
+
+
     public void render(float delta){
+
+
+
+
+
+
         update(delta);
+
+        if (TimeUtils.timeSinceMillis(idleGametimer) > 20000){
+            game.goToIdle();
+        }
 
         //Execute handleEvent each 1 second
         timeSeconds +=Gdx.graphics.getRawDeltaTime();
@@ -370,14 +436,27 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         renderer.render();
+
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
+
         updateOrder();
         chef1.draw(game.batch);
         chef2.draw(game.batch);
         controlledChef.drawNotification(game.batch);
+        if (isActiveOrder){
+            // TODO add this if statement to if report
+            orderTimer.draw(game.batch, 1);
+            hud.stage.addActor(orderTimer);
+            if (orderTime > 0){ orderTime -= 0.01f;}
+            else {orderTime = 0;}
+
+
+
+            orderTimer.setPercentage(orderTime);
+        }
         if (plateStation.getPlate().size() > 0){
             for(Object ing : plateStation.getPlate()){
                 Ingredient ingNew = (Ingredient) ing;

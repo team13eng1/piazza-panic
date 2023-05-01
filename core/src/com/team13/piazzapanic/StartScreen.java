@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.*;
+import Sprites.orderBar;
+import com.badlogic.gdx.graphics.Color;
+
 
 /**
  * This class implements the `Screen` interface and represents the start screen of the game.
@@ -57,6 +60,8 @@ public class StartScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         backgroundSprite.draw(game.batch);
+        orderBar a  = new  orderBar(30,30,50,5, Color.RED);
+        a.draw(game.batch, 1);
         game.batch.end();
     }
 

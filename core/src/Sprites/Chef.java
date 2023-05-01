@@ -34,6 +34,8 @@ public class Chef extends Sprite {
 
     public Vector2 startVector;
     private float waitTimer;
+
+    private float putDownWaitTimer;
     public boolean chefOnChefCollision;
     private final Texture normalChef;
     private final Texture bunsChef;
@@ -116,6 +118,7 @@ public class Chef extends Sprite {
         setBounds(0, 0, chefWidth, chefHeight);
         chefOnChefCollision = false;
         waitTimer = 0;
+        putDownWaitTimer = 0;
         startVector = new Vector2(0, 0);
         whatTouching = null;
         inHandsIng = null;
@@ -419,11 +422,11 @@ public class Chef extends Sprite {
      */
 
     public void displayIngDynamic(SpriteBatch batch){
-        waitTimer += 1/60f;
+        putDownWaitTimer += 1/60f;
         previousInHandRecipe.create(completedStation.getX(), completedStation.getY() - (0.01f / MainGame.PPM), batch);
-        if (waitTimer > nextOrderAppearTime) {
+        if (putDownWaitTimer > nextOrderAppearTime) {
             previousInHandRecipe = null;
-            waitTimer = 0;
+            putDownWaitTimer = 0;
         }
     }
 
@@ -574,6 +577,14 @@ public class Chef extends Sprite {
                 setChefSkin(item);
             }
         }
+    }
+
+    public float getNotificationY() {
+        return notificationY;
+    }
+
+    public float getNotificationX() {
+        return notificationX;
     }
 }
 
